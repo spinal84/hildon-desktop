@@ -4,7 +4,7 @@ Priority: optional
 Maintainer: Arthur Demchenkov <spinal.by@gmail.com>
 Build-Depends:
  cdbs (>= 0.4.21),
- debhelper (>= 4.1.0),
+ debhelper (>= 10),
  pkg-config (>= 0.18),
  libmatchbox2-dev (>= 0.2.92-2),
  libclutter-0.8-dev (>> 0.8.2-0maemo57),
@@ -28,7 +28,7 @@ Build-Depends:
  libprofile-dev (>= 0.0.15),
  maemo-launcher-dev,
  libhildonmime-dev
-Standards-Version: 3.8.0
+Standards-Version: 4.3.0
 
 Package: hildon-desktop
 Section: x11
@@ -53,6 +53,6 @@ Package: hildon-desktop-dbg
 Section: devel
 Architecture: any
 Priority: extra
-Depends: hildon-desktop (= ${Source-Version})
+Depends: hildon-desktop (= ${source:Version})
 Description: Debug symbols for Hildon desktop
  Debug symbols for Hildon desktop.
