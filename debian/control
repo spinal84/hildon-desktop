@@ -21,7 +21,6 @@ Build-Depends:
  libhildondesktop1-dev (>= 2.1.6),
  libcanberra-dev,
  libxrandr-dev,
- upstart-dev,
  mce-dev (>= 1.8.14),
  libgnome-menu-dev,
  libcail-dev,
