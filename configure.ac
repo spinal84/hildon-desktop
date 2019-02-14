@@ -131,7 +131,7 @@ if test "$ac_cv_enable_static_mb2" = yes; then
 		       libhildondesktop-1 dnl
 		       libcanberra dnl
 		       gnome-vfs-2.0 dnl
-		       libgnome-menu dnl
+		       libgnome-menu-3.0 dnl
 		       gdk-pixbuf-xlib-2.0 dnl
 		       pangoxft dnl
 		       xft dnl
@@ -155,7 +155,7 @@ else
 		       libhildondesktop-1 dnl
 		       libcanberra dnl
 		       gnome-vfs-2.0 dnl
-		       libgnome-menu dnl
+		       libgnome-menu-3.0 dnl
 		       gdk-pixbuf-xlib-2.0 dnl
 		       xft dnl
 		       libmatchbox2-0.1 dnl
