@@ -2282,15 +2282,17 @@ void hd_render_manager_restack()
         if (child != CLUTTER_ACTOR(priv->home) &&
             child != CLUTTER_ACTOR(priv->blur_front))
           {
-            ClutterGeometry geo = {0};
+            union {
+              ClutterGeometry clutter;
+              MBGeometry      mb;
+            } geo = {0};
             gboolean maximized;
 
-            hd_render_manager_get_geo_for_current_screen(child, &geo);
-            if (!hd_render_manager_clip_geo(&geo))
+            hd_render_manager_get_geo_for_current_screen(child, &geo.clutter);
+            if (!hd_render_manager_clip_geo(&geo.clutter))
               /* It's neiteher maximized nor @app_top, it doesn't exist. */
               continue;
-            maximized = hd_comp_mgr_client_is_maximized (
-                                        *((MBGeometry*)((void*)&geo)));
+            maximized = hd_comp_mgr_client_is_maximized (geo.mb);
 
             /* If we are in HOME_EDIT_DLG state, the background is always
              * blurred, and if something is maximised it MUST be a dialog
@@ -2314,8 +2316,8 @@ void hd_render_manager_restack()
                 break;
               }
             /* Check for dialog position */
-            if (geo.width == hd_comp_mgr_get_current_screen_width () &&
-                geo.y + geo.height == hd_comp_mgr_get_current_screen_height ())
+            if (geo.clutter.width == hd_comp_mgr_get_current_screen_width () &&
+                geo.clutter.y + geo.clutter.height == hd_comp_mgr_get_current_screen_height ())
               {
                 move_to_front = FALSE;
               }
