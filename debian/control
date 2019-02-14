@@ -23,7 +23,6 @@ Build-Depends:
  libxrandr-dev,
  mce-dev (>= 1.8.14),
  libgnome-menu-3-dev,
- libcail-dev,
  libgnomevfs2-dev,
  libprofile-dev (>= 0.0.15),
  maemo-launcher-dev,

@@ -2,12 +2,6 @@
 %:
 	dh $@
 
-ifeq (,$(findstring noa11y,$(DEB_BUILD_OPTIONS)))
-ENABLE_A11Y = --enable-a11y
-else
-ENABLE_A11Y =
-endif
-
 ifeq (,$(findstring nolauncher,$(DEB_BUILD_OPTIONS)))
 ENABLE_LAUNCHER += --enable-maemo-launcher
 endif
@@ -21,7 +15,6 @@ endif
 CFLAGS += -DG_DISABLE_CHECKS -Winline
 
 CONFFLAGS += \
-	$(ENABLE_A11Y) \
 	$(ENABLE_LAUNCHER) \
 	--enable-static-mb2=yes
 
