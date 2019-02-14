@@ -157,16 +157,12 @@ void hd_comp_mgr_set_effect_running(HdCompMgr *hmgr, gboolean running);
 void hd_comp_mgr_reset_overlay_shape (HdCompMgr *hmgr);
 
 static inline guint
-hd_comp_mgr_get_current_screen_width(void);
-static inline guint
 hd_comp_mgr_get_current_screen_width (void)
 {
   extern MBWindowManager *hd_mb_wm;
   return hd_mb_wm->xdpy_width;
 }
 
-static inline guint
-hd_comp_mgr_get_current_screen_height(void);
 static inline guint
 hd_comp_mgr_get_current_screen_height(void)
 {
@@ -175,15 +171,11 @@ hd_comp_mgr_get_current_screen_height(void)
 }
 
 static inline
-HdCompMgr *hd_comp_mgr_get(void);
-static inline
 HdCompMgr *hd_comp_mgr_get(void) {
   extern MBWindowManager *hd_mb_wm;
   return HD_COMP_MGR(hd_mb_wm->comp_mgr);
 }
 
-static inline
-gboolean hd_comp_mgr_is_portrait(void);
 static inline
 gboolean hd_comp_mgr_is_portrait(void)
 { /* This is a very typesafe macro. */
@@ -191,8 +183,6 @@ gboolean hd_comp_mgr_is_portrait(void)
   return hd_mb_wm->xdpy_width < hd_mb_wm->xdpy_height;
 }
 
-static inline gboolean
-hd_comp_mgr_client_is_maximized (MBGeometry geom);
 static inline gboolean
 hd_comp_mgr_client_is_maximized (MBGeometry geom)
 {
