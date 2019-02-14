@@ -46,6 +46,10 @@ typedef struct HdWmPrivate HdWmPrivate;
 #define HD_WM(c)       ((HdWm*)(c))
 #define HD_WM_CLASS(c) ((HdWmClass*)(c))
 #define HD_TYPE_WM     (hd_wm_class_type ())
+#define HD_WM_CLIENT_TYPE(t) \
+                       ((HdWmClientType)(t))
+#define HD_WM_CLIENT_CLIENT_TYPE(c) \
+                       HD_WM_CLIENT_TYPE ((MB_WM_CLIENT_CLIENT_TYPE (c)))
 
 struct HdWm
 {

@@ -2136,8 +2136,8 @@ hd_transition_play_tactile(gboolean is_map, MBWMClientType c_type)
     {
       gchar *pattern = NULL;
 
-      if (c_type == HdWmClientTypeStatusMenu ||
-          c_type == HdWmClientTypeAppMenu)
+      if (HD_WM_CLIENT_TYPE (c_type) == HdWmClientTypeStatusMenu ||
+          HD_WM_CLIENT_TYPE (c_type) == HdWmClientTypeAppMenu)
         pattern = is_map?"appmenu":"appmenu-out";
       else if (c_type == MBWMClientTypeDialog)
         pattern = is_map?"dialog":"dialog-out";

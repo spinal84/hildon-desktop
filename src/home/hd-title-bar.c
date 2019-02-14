@@ -1042,7 +1042,7 @@ hd_title_bar_set_window(HdTitleBar *bar, MBWindowManagerClient *client)
       MBWMDecorButton * button = l->data;
       if (button->type == MBWMDecorButtonClose)
         state |= HDTB_VIS_BTN_CLOSE;
-      if (button->type == HdHomeThemeButtonBack)
+      if (HD_THEME_BUTTON_TYPE (button->type) == HdHomeThemeButtonBack)
         state |= HDTB_VIS_BTN_BACK;
 
       pressed |= button->state != MBWMDecorButtonStateInactive;

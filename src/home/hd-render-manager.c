@@ -2237,11 +2237,12 @@ void hd_render_manager_restack()
                             clutter_actor_get_name(actor)?clutter_actor_get_name(actor):"?",
                             clutter_actor_get_name(parent)?clutter_actor_get_name(parent):"?");
 #endif /*STACKING_DEBUG*/
-                     clutter_actor_raise_top(actor);
-                     if (live_bg_actor && c->desktop == curr_view
-                         && MB_WM_CLIENT_CLIENT_TYPE (c)
-                                             == HdWmClientTypeHomeApplet)
-                       clutter_actor_raise_top (live_bg_actor);
+                      clutter_actor_raise_top(actor);
+                      if (live_bg_actor && c->desktop == curr_view &&
+                          HD_WM_CLIENT_CLIENT_TYPE (c) == HdWmClientTypeHomeApplet)
+                        {
+                          clutter_actor_raise_top (live_bg_actor);
+                        }
                     }
 #if STACKING_DEBUG
                   else

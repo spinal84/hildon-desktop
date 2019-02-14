@@ -80,6 +80,8 @@ typedef enum _HdThemeButtomType
 #define HD_THEME(c)       ((HdTheme*)(c))
 #define HD_THEME_CLASS(c) ((HdThemeClass*)(c))
 #define HD_TYPE_THEME     (hd_theme_class_type ())
+#define HD_THEME_BUTTON_TYPE(t) \
+                          ((HdThemeButtonType)(t))
 
 struct HdThemeClass
 {

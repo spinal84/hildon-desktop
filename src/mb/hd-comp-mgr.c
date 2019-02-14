@@ -1345,17 +1345,17 @@ hd_comp_mgr_unregister_client (MBWMCompMgr *mgr, MBWindowManagerClient *c)
           g_object_set_data (G_OBJECT (actor), "HD-ApplicationId", NULL);
         }
     }
-  else if (MB_WM_CLIENT_CLIENT_TYPE (c) == HdWmClientTypeStatusArea)
+  else if (HD_WM_CLIENT_CLIENT_TYPE (c) == HdWmClientTypeStatusArea)
     {
       hd_home_remove_status_area (HD_HOME (priv->home), actor);
       priv->status_area_client = NULL;
     }
-  else if (MB_WM_CLIENT_CLIENT_TYPE (c) == HdWmClientTypeStatusMenu)
+  else if (HD_WM_CLIENT_CLIENT_TYPE (c) == HdWmClientTypeStatusMenu)
     {
       hd_home_remove_status_menu (HD_HOME (priv->home), actor);
       priv->status_menu_client = NULL;
     }
-  else if (MB_WM_CLIENT_CLIENT_TYPE (c) == HdWmClientTypeHomeApplet)
+  else if (HD_WM_CLIENT_CLIENT_TYPE (c) == HdWmClientTypeHomeApplet)
     {
       ClutterActor *applet = mb_wm_comp_mgr_clutter_client_get_actor (cclient);
 
@@ -2244,12 +2244,12 @@ hd_comp_mgr_map_notify (MBWMCompMgr *mgr, MBWindowManagerClient *c)
 
   /* Hide status menu if any window except an applet is mapped */
   if (priv->status_menu_client &&
-      ctype != HdWmClientTypeHomeApplet &&
+      HD_WM_CLIENT_TYPE (ctype) != HdWmClientTypeHomeApplet &&
       ctype != MBWMClientTypeOverride &&
       !HD_IS_BANNER_NOTE(c))
     mb_wm_client_deliver_delete (priv->status_menu_client);
 
-  if (ctype == HdWmClientTypeHomeApplet)
+  if (HD_WM_CLIENT_TYPE (ctype) == HdWmClientTypeHomeApplet)
     {
       HdHomeApplet * applet  = HD_HOME_APPLET (c);
       char         * applet_id = applet->applet_id;
@@ -2269,13 +2269,13 @@ hd_comp_mgr_map_notify (MBWMCompMgr *mgr, MBWindowManagerClient *c)
         }
       return;
     }
-  else if (ctype == HdWmClientTypeStatusArea)
+  else if (HD_WM_CLIENT_TYPE (ctype) == HdWmClientTypeStatusArea)
     {
       hd_home_add_status_area (HD_HOME (priv->home), actor);
       priv->status_area_client = c;
       return;
     }
-  else if (ctype == HdWmClientTypeStatusMenu)
+  else if (HD_WM_CLIENT_TYPE (ctype) == HdWmClientTypeStatusMenu)
     { /* Either status menu OR power menu. */
       if (STATE_ONE_OF(hd_render_manager_get_state(),
             HDRM_STATE_LAUNCHER | HDRM_STATE_LAUNCHER_PORTRAIT |
@@ -2290,11 +2290,11 @@ hd_comp_mgr_map_notify (MBWMCompMgr *mgr, MBWindowManagerClient *c)
       priv->status_menu_client = c;
       return;
     }
-  else if (ctype == HdWmClientTypeAnimationActor)
+  else if (HD_WM_CLIENT_TYPE (ctype) == HdWmClientTypeAnimationActor)
     {
       return;
     }
-  else if (ctype == HdWmClientTypeAppMenu)
+  else if (HD_WM_CLIENT_TYPE (ctype) == HdWmClientTypeAppMenu)
     {
       /* This is mainly for the power key menu, but we must not allow
        * menus is general when not in APP state because they are not
@@ -2802,10 +2802,10 @@ hd_comp_mgr_unmap_notify (MBWMCompMgr *mgr, MBWindowManagerClient *c)
       for (; above; above = above->stacked_above)
         {
           if (above != c && !mb_wm_client_is_unmap_confirmed (above) &&
-              MB_WM_CLIENT_CLIENT_TYPE(above)!=MBWMClientTypeOverride &&
-              MB_WM_CLIENT_CLIENT_TYPE(above)!=HdWmClientTypeHomeApplet &&
-              MB_WM_CLIENT_CLIENT_TYPE(above)!=HdWmClientTypeStatusArea &&
-              MB_WM_CLIENT_CLIENT_TYPE(above)!=HdWmClientTypeAnimationActor &&
+              MB_WM_CLIENT_CLIENT_TYPE(above) != MBWMClientTypeOverride &&
+              HD_WM_CLIENT_CLIENT_TYPE(above) != HdWmClientTypeHomeApplet &&
+              HD_WM_CLIENT_CLIENT_TYPE(above) != HdWmClientTypeStatusArea &&
+              HD_WM_CLIENT_CLIENT_TYPE(above) != HdWmClientTypeAnimationActor &&
               !HD_IS_BANNER_NOTE (above))
           {
             g_debug ("spoiler=%p", above);
@@ -2912,12 +2912,12 @@ hd_comp_mgr_effect (MBWMCompMgr                *mgr,
   if (event == MBWMCompMgrClientEventUnmap)
     {
       hd_transition_play_tactile (FALSE, c_type);
-      if (c_type == HdWmClientTypeStatusMenu)
+      if (HD_WM_CLIENT_TYPE (c_type) == HdWmClientTypeStatusMenu)
         hd_transition_popup(hmgr, c, MBWMCompMgrClientEventUnmap);
       else if (HD_IS_INCOMING_EVENT_PREVIEW_NOTE(c))
         hd_transition_notification(hmgr, c, MBWMCompMgrClientEventUnmap);
       else if (c_type == MBWMClientTypeDialog ||
-               c_type == HdWmClientTypeAppMenu)
+               HD_WM_CLIENT_TYPE (c_type) == HdWmClientTypeAppMenu)
         {
           if (!hd_util_client_obscured(c))
             hd_transition_popup(hmgr, c, MBWMCompMgrClientEventUnmap);
@@ -3000,10 +3000,10 @@ hd_comp_mgr_effect (MBWMCompMgr                *mgr,
   else if (event == MBWMCompMgrClientEventMap)
     {
       hd_transition_play_tactile (TRUE, c_type);
-      if (c_type == HdWmClientTypeStatusMenu)
+      if (HD_WM_CLIENT_TYPE (c_type) == HdWmClientTypeStatusMenu)
         hd_transition_popup(hmgr, c, MBWMCompMgrClientEventMap);
       else if ((c_type == MBWMClientTypeDialog) ||
-               (c_type == HdWmClientTypeAppMenu))
+               (HD_WM_CLIENT_TYPE (c_type) == HdWmClientTypeAppMenu))
         hd_transition_popup(hmgr, c, MBWMCompMgrClientEventMap);
       else if (HD_IS_INCOMING_EVENT_PREVIEW_NOTE(c))
         hd_transition_notification(hmgr, c, MBWMCompMgrClientEventMap);

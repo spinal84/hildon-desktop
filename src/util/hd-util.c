@@ -216,8 +216,8 @@ hd_util_client_has_modal_blocker (MBWindowManagerClient *c)
   return
       ((c_type == MBWMClientTypeDialog) ||
        (c_type == MBWMClientTypeMenu) ||
-       (c_type == HdWmClientTypeAppMenu) ||
-       (c_type == HdWmClientTypeStatusMenu) ||
+       (HD_WM_CLIENT_TYPE (c_type) == HdWmClientTypeAppMenu) ||
+       (HD_WM_CLIENT_TYPE (c_type) == HdWmClientTypeStatusMenu) ||
        (c_type == MBWMClientTypeNote &&
         HD_NOTE (c)->note_type != HdNoteTypeIncomingEventPreview &&
         HD_NOTE (c)->note_type != HdNoteTypeIncomingEvent &&
