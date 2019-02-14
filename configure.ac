@@ -126,6 +126,7 @@ if test "$ac_cv_enable_static_mb2" = yes; then
 		       xrandr dnl
 		       gtk+-2.0 dnl
 		       gconf-2.0 dnl
+		       glesv2 dnl
 		       hildon-1 dnl
 		       libhildondesktop-1 dnl
 		       libcanberra dnl
@@ -149,6 +150,7 @@ else
 		       xrandr dnl
 		       gtk+-2.0 dnl
 		       gconf-2.0 dnl
+		       glesv2 dnl
 		       hildon-1 dnl
 		       libhildondesktop-1 dnl
 		       libcanberra dnl
