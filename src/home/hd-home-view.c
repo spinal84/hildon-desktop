@@ -627,7 +627,6 @@ load_background_idle (gpointer data)
           
         if (pixbuf != NULL)
           {
-            gboolean          has_alpha;
             gint              width;
             gint              height;
             gint              rowstride;
@@ -638,7 +637,6 @@ load_background_idle (gpointer data)
             gint x,y;
 
             /* Get pixbuf properties */
-            has_alpha       = gdk_pixbuf_get_has_alpha (pixbuf);
             width           = gdk_pixbuf_get_width (pixbuf);
             height          = gdk_pixbuf_get_height (pixbuf);
             rowstride       = gdk_pixbuf_get_rowstride (pixbuf);

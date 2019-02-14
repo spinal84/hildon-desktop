@@ -287,9 +287,6 @@ tidy_highlight_set_property (GObject      *object,
 				    GParamSpec   *pspec)
 {
   TidyHighlight        *ctexture = TIDY_HIGHLIGHT (object);
-  TidyHighlightPrivate *priv;
-
-  priv = ctexture->priv;
 
   switch (prop_id)
     {
@@ -309,9 +306,6 @@ tidy_highlight_get_property (GObject    *object,
 				    GParamSpec *pspec)
 {
   TidyHighlight *ctexture = TIDY_HIGHLIGHT (object);
-  TidyHighlightPrivate *priv;
-
-  priv = ctexture->priv;
 
   switch (prop_id)
     {

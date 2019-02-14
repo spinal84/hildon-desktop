@@ -1416,7 +1416,6 @@ hd_comp_mgr_texture_update_area(HdCompMgr *hmgr,
                                 ClutterActor* actor)
 {
   ClutterActor *parent;
-  HdCompMgrPrivate * priv;
   gboolean blur_update = FALSE;
   ClutterActor *actors_stage;
 
@@ -1440,8 +1439,6 @@ hd_comp_mgr_texture_update_area(HdCompMgr *hmgr,
    */
   if (hd_transition_rotate_ignore_damage())
     return;
-
-  priv = hmgr->priv;
 
   /* TFP textures are usually bundled into another group, and it is
    * this group that sets visibility - so we must check it too */

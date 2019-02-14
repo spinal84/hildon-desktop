@@ -783,11 +783,9 @@ hd_home_view_container_class_init (HdHomeViewContainerClass *klass)
 static void
 hd_home_view_container_init (HdHomeViewContainer *self)
 {
-  HdHomeViewContainerPrivate *priv;
-
   /* Create priv member */
-  priv = self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self,
-                                                   HD_TYPE_HOME_VIEW_CONTAINER, HdHomeViewContainerPrivate);
+  self->priv = G_TYPE_INSTANCE_GET_PRIVATE (
+                 self, HD_TYPE_HOME_VIEW_CONTAINER, HdHomeViewContainerPrivate);
 }
 
 ClutterActor *

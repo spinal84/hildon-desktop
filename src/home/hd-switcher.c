@@ -271,11 +271,9 @@ hd_switcher_constructed (GObject *object)
 static void
 hd_switcher_init (HdSwitcher *self)
 {
-  HdSwitcherPrivate *priv;
-
-  priv = self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self,
-					    HD_TYPE_SWITCHER,
-					    HdSwitcherPrivate);
+  self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self,
+                                            HD_TYPE_SWITCHER,
+                                            HdSwitcherPrivate);
 }
 
 static void

@@ -295,9 +295,6 @@ tidy_sub_texture_set_property (GObject      *object,
 				    GParamSpec   *pspec)
 {
   TidySubTexture        *ctexture = TIDY_SUB_TEXTURE (object);
-  TidySubTexturePrivate *priv;
-
-  priv = ctexture->priv;
 
   switch (prop_id)
     {
@@ -317,9 +314,6 @@ tidy_sub_texture_get_property (GObject    *object,
 				    GParamSpec *pspec)
 {
   TidySubTexture *ctexture = TIDY_SUB_TEXTURE (object);
-  TidySubTexturePrivate *priv;
-
-  priv = ctexture->priv;
 
   switch (prop_id)
     {
