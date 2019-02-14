@@ -1412,7 +1412,9 @@ _hd_app_mgr_child_setup(gpointer user_data)
   fd = open ("/proc/self/oom_adj", O_WRONLY);
   if (fd >= 0)
   {
-    write (fd, OOM_DISABLE, sizeof (OOM_DISABLE));
+    if (write (fd, OOM_DISABLE, sizeof (OOM_DISABLE)) == -1) {
+      g_warning ("Could not unprotect from OOM: %s", strerror(errno));
+    }
     close (fd);
   }
 }
