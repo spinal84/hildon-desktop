@@ -2682,7 +2682,7 @@ hd_comp_mgr_determine_current_app ()
         continue;
       if (!c->window)
         continue;
-      if (c->window->name && !g_strncasecmp (c->window->name, "systemui", 8))
+      if (c->window->name && !g_ascii_strncasecmp (c->window->name, "systemui", 8))
         /* systemui is not an application. */
         continue;
       return c;

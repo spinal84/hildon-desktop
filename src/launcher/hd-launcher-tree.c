@@ -374,7 +374,7 @@ hd_launcher_tree_handle_tree_changed (GMenuTree *menu_tree,
   else
     {
       hd_mutex_enable (TRUE);
-      g_thread_create (walk_thread_func, data, FALSE, NULL);
+      g_thread_new (NULL, walk_thread_func, data);
     }
 }
 

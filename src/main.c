@@ -80,7 +80,7 @@ gboolean hd_debug_mode_set = FALSE;
 MBWindowManager *hd_mb_wm = NULL;
 static int hd_clutter_mutex_enabled = FALSE;
 static int hd_clutter_mutex_do_unlock_after_disabling = FALSE;
-static GStaticMutex hd_clutter_mutex = G_STATIC_MUTEX_INIT;
+static GMutex hd_clutter_mutex;
 
 void hd_mutex_enable (int setting)
 {
@@ -98,7 +98,7 @@ hd_mutex_lock (void)
 {
   /*g_printerr ("%s, enabled %d\n", __func__, hd_clutter_mutex_enabled);*/
   if (hd_clutter_mutex_enabled)
-    g_static_mutex_lock (&hd_clutter_mutex);
+    g_mutex_lock (&hd_clutter_mutex);
 }
 
 static void
@@ -106,10 +106,10 @@ hd_mutex_unlock (void)
 {
   /*g_printerr ("%s, enabled %d\n", __func__, hd_clutter_mutex_enabled);*/
   if (hd_clutter_mutex_enabled)
-    g_static_mutex_unlock (&hd_clutter_mutex);
+    g_mutex_unlock (&hd_clutter_mutex);
   else if (hd_clutter_mutex_do_unlock_after_disabling)
     {
-      g_static_mutex_unlock (&hd_clutter_mutex);
+      g_mutex_unlock (&hd_clutter_mutex);
       hd_clutter_mutex_do_unlock_after_disabling = FALSE;
     }
 }
@@ -118,9 +118,6 @@ static void
 hd_mutex_init (void)
 {
   /* g_printerr ("%s%d\n", __func__); */
-  if (!g_thread_supported ())
-    g_error ("g_thread_init() must be called before %s", __func__);
-
   clutter_threads_set_lock_functions (hd_mutex_lock, hd_mutex_unlock);
 }
 
@@ -618,8 +615,6 @@ main (int argc, char **argv)
   setlocale (LC_ALL, "");
   bindtextdomain (GETTEXT_PACKAGE, "/usr/share/locale");
   textdomain (GETTEXT_PACKAGE);
-
-  g_thread_init (NULL);
 
   gnome_vfs_init ();
 
