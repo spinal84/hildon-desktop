@@ -4471,13 +4471,13 @@ hd_task_navigator_rotate_thumbs (void)
          !thumb_is_notification ((Thumbnail *) (t->data)))
     t = g_list_next (t);
 
-    if (t)
-      {
-        Thumbnails = g_list_insert_before (Thumbnails, t, s->data);
-        g_list_free (s);
-      }
-    else
-      Thumbnails = g_list_concat (Thumbnails,s);
+  if (t)
+    {
+      Thumbnails = g_list_insert_before (Thumbnails, t, s->data);
+      g_list_free (s);
+    }
+  else
+    Thumbnails = g_list_concat (Thumbnails, s);
 
   layout (NULL, FALSE);
 }
