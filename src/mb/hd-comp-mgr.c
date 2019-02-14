@@ -58,6 +58,7 @@
 #include <dbus/dbus-glib-bindings.h>
 #include <mce/dbus-names.h>
 
+#include <sys/stat.h>
 #include <sys/types.h>
 #include <fcntl.h>
 #include <signal.h>
