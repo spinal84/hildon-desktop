@@ -27,7 +27,7 @@
 #include <gtk/gtk.h>
 #include <string.h>
 
-enum {
+typedef enum {
   HD_GTK_STYLE_FG,
   HD_GTK_STYLE_BG,
   HD_GTK_STYLE_LIGHT,
@@ -35,7 +35,7 @@ enum {
   HD_GTK_STYLE_MID,
   HD_GTK_STYLE_TEXT,
   HD_GTK_STYLE_BASE
-};
+} HDGtkStyle;
 
 static GtkWidget *top_level_window = NULL;
 static GtkWidget *gtk_widget_singletons[HD_GTK_WIDGET_SINGLETON_COUNT] = {0};
@@ -77,7 +77,7 @@ hd_gtk_style_to_clutter_color(ClutterColor          *dst,
 
 static void
 hd_gtk_style_get_color_component (HDGtkWidgetSingleton   widget_id,
-				  GtkRcFlags             component,
+				  HDGtkStyle             component,
 				  GtkStateType           state,
 				  ClutterColor          *color)
 {
