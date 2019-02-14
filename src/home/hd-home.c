@@ -801,47 +801,47 @@ hd_home_desktop_key_press (XKeyEvent *xev, void *userdata)
   /* We don't care if Ctrl is pressed. */
   if (xev->state & ControlMask)
     {
-      hd_home_reset_fn_state(home);
+      hd_home_reset_fn_state (home);
       return;
     }
 
   /*  g_debug ("%s, display: %p, keymap: %p", __FUNCTION__, display, keymap); */
 
-  if (hd_render_manager_get_state()==HDRM_STATE_LAUNCHER)
+  if (hd_render_manager_get_state () == HDRM_STATE_LAUNCHER)
     {
       int d;
-      d=0;
-      switch(xev->keycode) {
+      d = 0;
+      switch (xev->keycode) {
         case 24:
         case 25:
         case 26:
         case 27:
         case 28:
-          d=24;
+          d = 24;
           break;
         case 38:
         case 39:
         case 40:
         case 41:
         case 42:
-          d=33;
+          d = 33;
           break;
         case 52:
         case 53:
         case 54:
         case 55:
         case 56:
-          d=42;
+          d = 42;
           break;
         case 22: /* Backspace sends -1, which means up one level */
-          d=23;
+          d = 23;
           break;
       }
       if (d && conf_enable_launcher_navigator_accel)
         {
-          hd_launcher_activate(xev->keycode-d);
+          hd_launcher_activate (xev->keycode - d);
         }
-      else if(conf_enable_dbus_launcher_navigator)
+      else if (conf_enable_dbus_launcher_navigator)
         {
           char s[16];
           gdk_keymap_translate_keyboard_state (keymap,
@@ -850,57 +850,57 @@ hd_home_desktop_key_press (XKeyEvent *xev, void *userdata)
                                                0,
                                                &keyval,
                                                NULL, NULL, NULL);
-          sprintf(s, "%i", keyval+1024);
-          hd_dbus_send_event(s);
+          sprintf (s, "%i", keyval + 1024);
+          hd_dbus_send_event (s);
         }
     }
-  if (STATE_IS_TASK_NAV(hd_render_manager_get_state()))
+  if (STATE_IS_TASK_NAV (hd_render_manager_get_state ()))
     {
-      int d,y;
-      d=0;
-      switch(xev->keycode) {
+      int d, y;
+      d = 0;
+      switch (xev->keycode) {
         case 24:
         case 25:
         case 26:
         case 27:
         case 28:
-          d=24;
-          y=0;
+          d = 24;
+          y = 0;
           break;
         case 38:
         case 39:
         case 40:
         case 41:
         case 42:
-          d=38;
-          y=1;
+          d = 38;
+          y = 1;
           break;
         case 52:
         case 53:
         case 54:
         case 55:
         case 56:
-          d=52;
-          y=2;
+          d = 52;
+          y = 2;
           break;
       }
       if (d && conf_enable_launcher_navigator_accel)
         {
           time (&now);
-          if ((xev->state & (FN_MODIFIER|ShiftMask))||(
+          if ((xev->state & (FN_MODIFIER | ShiftMask)) || (
                (difftime (now, priv->last_fn_time) < 4)
-               &&(priv->fn_state||priv->shift_state)
+               && (priv->fn_state || priv->shift_state)
               ))
             {
-              hd_task_navigator_activate(xev->keycode-d,y,1);
-              hd_home_reset_fn_state(home);
+              hd_task_navigator_activate (xev->keycode - d, y, 1);
+              hd_home_reset_fn_state (home);
             }
           else
             {
-              hd_task_navigator_activate(xev->keycode-d,y,0);
+              hd_task_navigator_activate (xev->keycode - d, y, 0);
             }
         }
-      else if(conf_enable_dbus_launcher_navigator)
+      else if (conf_enable_dbus_launcher_navigator)
         {
           char s[16];
           gdk_keymap_translate_keyboard_state (keymap,
@@ -909,11 +909,11 @@ hd_home_desktop_key_press (XKeyEvent *xev, void *userdata)
                                                0,
                                                &keyval,
                                                NULL, NULL, NULL);
-          sprintf(s, "%i", keyval+2048);
-          hd_dbus_send_event(s);
+          sprintf (s, "%i", keyval + 2048);
+          hd_dbus_send_event (s);
         }
     }
-  if (STATE_IS_HOME(hd_render_manager_get_state()))
+  if (STATE_IS_HOME (hd_render_manager_get_state ()))
     {
       gdk_keymap_translate_keyboard_state (keymap,
                                            xev->keycode,
@@ -921,21 +921,21 @@ hd_home_desktop_key_press (XKeyEvent *xev, void *userdata)
                                            0,
                                            &keyval,
                                            NULL, NULL, NULL);
-      g_warning("kv=%i   %i %i", keyval, GDK_Left, GDK_Right);
-      if (keyval==GDK_Left)
+      g_warning ("kv=%i   %i %i", keyval, GDK_Left, GDK_Right);
+      if (keyval == GDK_Left)
         {
           if (!hd_home_view_container_is_scrolling (HD_HOME_VIEW_CONTAINER (priv->view_container)))
             hd_home_view_container_scroll_to_previous (HD_HOME_VIEW_CONTAINER (priv->view_container), 20000);
           return ;
         }
-      if (keyval==GDK_Right)
+      if (keyval == GDK_Right)
         {
           if (!hd_home_view_container_is_scrolling (HD_HOME_VIEW_CONTAINER (priv->view_container)))
             hd_home_view_container_scroll_to_next (HD_HOME_VIEW_CONTAINER (priv->view_container), -20000);
           return ;
         }
 
-      if(conf_enable_home_contacts_phone)
+      if (conf_enable_home_contacts_phone)
         {
 
           /* First check how long has it been since last key press. If more than n sec,
@@ -1027,7 +1027,7 @@ hd_home_desktop_key_press (XKeyEvent *xev, void *userdata)
                 }
             }
         }
-      else if(conf_enable_dbus_launcher_navigator)
+      else if (conf_enable_dbus_launcher_navigator)
         {
           char s[16];
           gdk_keymap_translate_keyboard_state (keymap,
@@ -1036,8 +1036,8 @@ hd_home_desktop_key_press (XKeyEvent *xev, void *userdata)
                                                0,
                                                &keyval,
                                                NULL, NULL, NULL);
-          sprintf(s, "%i", keyval+4096);
-          hd_dbus_send_event(s);
+          sprintf (s, "%i", keyval + 4096);
+          hd_dbus_send_event (s);
         }
     }
 
@@ -1062,9 +1062,9 @@ handle_fn_shift:
       priv->shift_state = FN_STATE_NONE;
       g_debug ("%s, SHIFT state: %d", __FUNCTION__, priv->shift_state);
     }
-  if(XkbKeycodeToKeysym(clutter_x11_get_default_display(), xev->keycode, 0, 0) == FN_KEY)
+  if (XkbKeycodeToKeysym (clutter_x11_get_default_display (), xev->keycode, 0, 0) == FN_KEY)
     priv->ignore_next_fn_release = FALSE;
-  if(XkbKeycodeToKeysym(clutter_x11_get_default_display(), xev->keycode, 0, 0) == GDK_Shift_L)
+  if (XkbKeycodeToKeysym (clutter_x11_get_default_display (), xev->keycode, 0, 0) == GDK_Shift_L)
     priv->ignore_next_shift_release = FALSE;
 
 }
