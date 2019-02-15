@@ -117,8 +117,8 @@ if test "$ac_cv_enable_static_mb2" = yes; then
         MB2_STATIC_LIB=/usr/lib/*/libmatchbox2-0.1.a
 
         PKG_CHECK_MODULES(HD, [clutter-0.8 dnl
-                       glib-2.0 >= 2.12 dnl
-                       gthread-2.0 dnl
+		       glib-2.0 >= 2.12 dnl
+		       gthread-2.0 dnl
 		       dbus-1 dnl
 		       x11 dnl
 		       xcomposite dnl
@@ -132,16 +132,16 @@ if test "$ac_cv_enable_static_mb2" = yes; then
 		       gnome-vfs-2.0 dnl
 		       libgnome-menu dnl
 		       gdk-pixbuf-xlib-2.0 dnl
-                       pangoxft dnl
-                       xft dnl
-                       profile dnl
-                       mce])
+		       pangoxft dnl
+		       xft dnl
+		       profile dnl
+		       mce])
 else
         MB2_CFLAGS=''
         MB2_STATIC_LIB=''
         PKG_CHECK_MODULES(HD, [clutter-0.8 dnl
-                       glib-2.0 >= 2.12 dnl
-                       gthread-2.0 dnl
+		       glib-2.0 >= 2.12 dnl
+		       gthread-2.0 dnl
 		       dbus-1 dnl
 		       x11 dnl
 		       xcomposite dnl
@@ -155,10 +155,10 @@ else
 		       gnome-vfs-2.0 dnl
 		       libgnome-menu dnl
 		       gdk-pixbuf-xlib-2.0 dnl
-                       xft dnl
-                       libmatchbox2-0.1 dnl
-                       profile dnl
-                       mce])
+		       xft dnl
+		       libmatchbox2-0.1 dnl
+		       profile dnl
+		       mce])
 fi
 
 HD_INCS='-I$(top_srcdir)/src -I$(top_srcdir)/src/home -I$(top_srcdir)/src/mb -I$(top_srcdir)/src/util -I$(top_srcdir)/src/a11y'
