@@ -32,6 +32,7 @@ Standards-Version: 4.3.0
 Package: hildon-desktop
 Section: x11
 Architecture: any
+Multi-arch: same
 Depends:
  ${shlibs:Depends},
  ${misc:Depends},
