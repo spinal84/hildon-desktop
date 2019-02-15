@@ -1,6 +1,6 @@
 SUBDIRS = 		launcher home tail
 
-INCLUDES = 		@HD_INCS@ \
+AM_CPPFLAGS = 		@HD_INCS@ \
 			@HD_CFLAGS@ -D_XOPEN_SOURCE=500
 
 MY_LIBS =		$(top_builddir)/src/a11y/launcher/libhdalauncher.la 	\

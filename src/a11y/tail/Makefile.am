@@ -1,4 +1,4 @@
-INCLUDES = @HD_INCS@ $(HD_CFLAGS) -D_XOPEN_SOURCE=500
+AM_CPPFLAGS = @HD_INCS@ $(HD_CFLAGS) -D_XOPEN_SOURCE=500
 
 tail_h = 		tail.h		\
 			tail-sub-texture.h

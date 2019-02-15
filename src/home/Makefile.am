@@ -1,4 +1,4 @@
-INCLUDES = -I $(top_srcdir)/src/launcher \
+AM_CPPFLAGS = -I $(top_srcdir)/src/launcher \
 	-I $(top_srcdir)src/tidy \
 	@HD_INCS@ $(MB2_CFLAGS) $(HD_CFLAGS) \
 	-D_XOPEN_SOURCE=500

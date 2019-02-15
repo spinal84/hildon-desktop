@@ -3,7 +3,7 @@ NULL =
 GLIB_GENMARSHAL = `$(PKG_CONFIG) --variable=glib_genmarshal glib-2.0`
 GLIB_MKENUMS = `$(PKG_CONFIG) --variable=glib_mkenums glib-2.0`
 
-INCLUDES = \
+AM_CPPFLAGS = \
         -I$(top_srcdir)                 \
 	-I$(top_srcdir)/src/		\
         -DPREFIX=\""$(prefix)"\"        \

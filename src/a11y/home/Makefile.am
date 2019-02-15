@@ -1,4 +1,4 @@
-INCLUDES = @HD_INCS@ $(HD_CFLAGS) $(MB2_CFLAGS) -D_XOPEN_SOURCE=500
+AM_CPPFLAGS = @HD_INCS@ $(HD_CFLAGS) $(MB2_CFLAGS) -D_XOPEN_SOURCE=500
 
 hdahome_h = 		hda-home-init.h \
 			hda-home.h

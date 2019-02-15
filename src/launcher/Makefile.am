@@ -1,4 +1,4 @@
-INCLUDES = \
+AM_CPPFLAGS = \
 	-I. \
 	-I.. \
 	-D_GNU_SOURCE \
