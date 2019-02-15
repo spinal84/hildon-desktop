@@ -3,7 +3,6 @@ Section: x11
 Priority: optional
 Maintainer: Arthur Demchenkov <spinal.by@gmail.com>
 Build-Depends:
- cdbs (>= 0.4.21),
  debhelper (>= 10),
  pkg-config (>= 0.18),
  libmatchbox2-dev (>= 0.2.92-2),
@@ -48,11 +47,3 @@ Depends:
  libgtk2.0-0 (>= 2:2.14.7-1maemo15)
 Description: Hildon desktop for Fremantle
  Hildon desktop for Fremantle.
-
-Package: hildon-desktop-dbg
-Section: devel
-Architecture: any
-Priority: extra
-Depends: hildon-desktop (= ${source:Version})
-Description: Debug symbols for Hildon desktop
- Debug symbols for Hildon desktop.

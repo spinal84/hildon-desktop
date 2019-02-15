@@ -1,6 +1,6 @@
 #!/usr/bin/make -f
-include /usr/share/cdbs/1/rules/debhelper.mk
-include /usr/share/cdbs/1/class/autotools.mk
+%:
+	dh $@
 
 ifeq (,$(findstring noa11y,$(DEB_BUILD_OPTIONS)))
 ENABLE_A11Y = --enable-a11y
@@ -20,16 +20,13 @@ endif
 
 CFLAGS += -DG_DISABLE_CHECKS -Winline
 
-DEB_CONFIGURE_EXTRA_FLAGS += \
+CONFFLAGS += \
 	$(ENABLE_A11Y) \
 	$(ENABLE_LAUNCHER) \
 	--enable-static-mb2=yes
 
-DEB_DH_STRIP_ARGS := --dbg-package=hildon-desktop-dbg
-DEB_DH_INSTALLINIT_ARGS := --no-start -- start 51 2 3 4 . stop 20 0 1 5 6 .
-
-makebuilddir/hildon-desktop::
-	[ -f configure ] || ./autogen.sh
+override_dh_auto_configure:
+	dh_auto_configure -- $(CONFFLAGS)
 
 binary-install/hildon-desktop::
 	dh_maemolauncher
@@ -40,5 +37,5 @@ binary-install/hildon-desktop::
 # Save SSU d/l volume.
 ifeq ($(DEB_BUILD_ARCH),armel)
 binary-post-install/hildon-desktop::
-	rm -rf "debian/$(cdbs_curpkg)/usr/share/doc"
+	rm -rf "debian/hildon-desktop/usr/share/doc"
 endif
