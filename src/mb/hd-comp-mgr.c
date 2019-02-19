@@ -322,8 +322,9 @@ hd_comp_mgr_client_init (MBWMObject *obj, va_list vap)
       hd_comp_mgr_client_process_hibernation_prop (client);
 
       /* Look up if there were already windows for this app. */
-      guint windows = (guint)g_hash_table_lookup (hmgr->priv->shown_apps,
-                                                  (gpointer)app);
+      guint windows =
+            GPOINTER_TO_UINT (g_hash_table_lookup (hmgr->priv->shown_apps,
+                                                   (gpointer)app));
       if (!windows)
         hd_app_mgr_app_opened (app);
 
@@ -1187,8 +1188,8 @@ hd_comp_mgr_unregister_client (MBWMCompMgr *mgr, MBWindowManagerClient *c)
   if (hclient->priv->app)
     {
       HdRunningApp *app = hclient->priv->app;
-      guint windows = (guint)g_hash_table_lookup (priv->shown_apps,
-                                                  (gpointer)app);
+      guint windows = GPOINTER_TO_UINT (g_hash_table_lookup (priv->shown_apps,
+                                                             (gpointer)app));
       if (--windows == 0)
         {
           hd_app_mgr_app_closed (app);

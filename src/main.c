@@ -257,7 +257,7 @@ key_binding_func (MBWindowManager   *wm,
 {
 	int action;
 
-  action = (int)(userdata);
+  action = GPOINTER_TO_INT (userdata);
 
   switch (action)
     {
@@ -346,7 +346,7 @@ key_binding_func_key (MBWindowManager   *wm,
   int action;
   char s[32];
 
-  action = (int)(userdata);
+  action = GPOINTER_TO_INT (userdata);
   sprintf(s,"%i",action);
 
   hd_dbus_send_event (s);
