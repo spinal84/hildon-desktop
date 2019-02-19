@@ -330,7 +330,7 @@ hd_comp_mgr_client_init (MBWMObject *obj, va_list vap)
 
       g_hash_table_insert (hmgr->priv->shown_apps,
                            (gpointer)app,
-                           (gpointer)++windows);
+                           GUINT_TO_POINTER (++windows));
     }
 
   /* Initially get window overlay state */
@@ -1199,7 +1199,7 @@ hd_comp_mgr_unregister_client (MBWMCompMgr *mgr, MBWindowManagerClient *c)
         {
           g_hash_table_insert (priv->shown_apps,
                                (gpointer)app,
-                               (gpointer)windows);
+                               GUINT_TO_POINTER (windows));
         }
     }
 
@@ -1209,7 +1209,7 @@ hd_comp_mgr_unregister_client (MBWMCompMgr *mgr, MBWindowManagerClient *c)
   if (hclient->priv->app &&
       hd_running_app_is_hibernating (hclient->priv->app) &&
       !g_hash_table_lookup (priv->hibernating_apps,
-                            (gpointer) hclient->priv->hibernation_key))
+                            GUINT_TO_POINTER (hclient->priv->hibernation_key)))
     {
       /*
        * We want to hold onto the CM client object, so we can continue using
@@ -1220,7 +1220,7 @@ hd_comp_mgr_unregister_client (MBWMCompMgr *mgr, MBWindowManagerClient *c)
       mb_wm_object_ref (MB_WM_OBJECT (cclient));
 
       g_hash_table_insert (priv->hibernating_apps,
-			   (gpointer) hclient->priv->hibernation_key,
+			   GUINT_TO_POINTER (hclient->priv->hibernation_key),
 			   hclient);
 
       hd_switcher_hibernate_window_actor (priv->switcher_group,
@@ -2390,7 +2390,8 @@ hd_comp_mgr_map_notify (MBWMCompMgr *mgr, MBWindowManagerClient *c)
 
   hkey = hclient->priv->hibernation_key;
 
-  hclient_h = g_hash_table_lookup (priv->hibernating_apps, (gpointer)hkey);
+  hclient_h = g_hash_table_lookup (priv->hibernating_apps,
+                                   GUINT_TO_POINTER (hkey));
 
   if (hclient_h)
     {
@@ -2401,7 +2402,7 @@ hd_comp_mgr_map_notify (MBWMCompMgr *mgr, MBWindowManagerClient *c)
       hd_switcher_replace_window_actor (priv->switcher_group,
                                         actor_h, actor);
       mb_wm_object_unref (MB_WM_OBJECT (hclient_h));
-      g_hash_table_remove (priv->hibernating_apps, (gpointer)hkey);
+      g_hash_table_remove (priv->hibernating_apps, GUINT_TO_POINTER (hkey));
     }
 
   int topmost;
@@ -3193,7 +3194,7 @@ hd_comp_mgr_close_app (HdCompMgr *hmgr, MBWMCompMgrClutterClient *cc,
       hd_switcher_remove_window_actor (priv->switcher_group, actor, cc);
 
       g_hash_table_remove (priv->hibernating_apps,
-                           (gpointer)h_client->priv->hibernation_key);
+                           GUINT_TO_POINTER (h_client->priv->hibernation_key));
 
       if (h_client->priv->app)
         {

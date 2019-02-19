@@ -779,7 +779,7 @@ main (int argc, char **argv)
 						keys1,
 						key_binding_func_key,
 						NULL,
-						(void*)(192+c-'a'+1));
+						GINT_TO_POINTER (192 + c - 'a' + 1));
 	  }
   }
 
