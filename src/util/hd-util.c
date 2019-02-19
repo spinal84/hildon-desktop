@@ -437,7 +437,7 @@ hd_util_change_screen_orientation (MBWindowManager *wm,
 }
 
 /* This is the finishing counterpart of hd_util_change_screen_orientation(),
- * whicih must be called after the root window has been reconfigured. */
+ * which must be called after the root window has been reconfigured. */
 void
 hd_util_root_window_configured(MBWindowManager *wm)
 {
