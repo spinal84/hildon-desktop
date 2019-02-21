@@ -1,7 +1,7 @@
 NULL =
 
-GLIB_GENMARSHAL = `pkg-config --variable=glib_genmarshal glib-2.0`
-GLIB_MKENUMS = `pkg-config --variable=glib_mkenums glib-2.0`
+GLIB_GENMARSHAL = `$(PKG_CONFIG) --variable=glib_genmarshal glib-2.0`
+GLIB_MKENUMS = `$(PKG_CONFIG) --variable=glib_mkenums glib-2.0`
 
 INCLUDES = \
         -I$(top_srcdir)                 \
