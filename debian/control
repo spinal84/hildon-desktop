@@ -30,7 +30,6 @@ Build-Depends:
 Standards-Version: 4.3.0
 
 Package: hildon-desktop
-Section: x11
 Architecture: any
 Multi-arch: same
 Depends:
@@ -46,5 +45,4 @@ Depends:
  clipboard-manager,
  ke-recv-l10n-mr | ke-recv-l10n-mr0,
  libgtk2.0-0 (>= 2:2.14.7-1maemo15)
-Description: Hildon desktop for Fremantle
- Hildon desktop for Fremantle.
+Description: Hildon desktop for Maemo Leste
