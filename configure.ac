@@ -134,6 +134,7 @@ if test "$ac_cv_enable_static_mb2" = yes; then
 		       glesv2 dnl
 		       hildon-1 dnl
 		       libhildondesktop-1 dnl
+		       libhildonmime dnl
 		       libcanberra dnl
 		       gnome-vfs-2.0 dnl
 		       libgnome-menu-3.0 dnl
@@ -158,6 +159,7 @@ else
 		       glesv2 dnl
 		       hildon-1 dnl
 		       libhildondesktop-1 dnl
+		       libhildonmime dnl
 		       libcanberra dnl
 		       gnome-vfs-2.0 dnl
 		       libgnome-menu-3.0 dnl
