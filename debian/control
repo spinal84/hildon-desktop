@@ -1,5 +1,5 @@
 Source: hildon-desktop
-Section: x11
+Section: n900
 Priority: optional
 Maintainer: Arthur Demchenkov <spinal.by@gmail.com>
 Build-Depends:
