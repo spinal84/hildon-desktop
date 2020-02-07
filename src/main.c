@@ -40,7 +40,6 @@
 #include <clutter/clutter-stage.h>
 #include <clutter/x11/clutter-x11.h>
 #include <clutter/clutter-container.h>
-#include <libgnomevfs/gnome-vfs.h>
 #include <gdk-pixbuf-xlib/gdk-pixbuf-xlib.h>
 
 #include "hildon-desktop.h"
@@ -615,8 +614,6 @@ main (int argc, char **argv)
   setlocale (LC_ALL, "");
   bindtextdomain (GETTEXT_PACKAGE, "/usr/share/locale");
   textdomain (GETTEXT_PACKAGE);
-
-  gnome_vfs_init ();
 
   mb_wm_object_init();
 

@@ -8,7 +8,6 @@ Build-Depends:
  libgnome-menu-3-dev,
  maemo-launcher-dev,
  libhildonmime-dev,
- libgnomevfs2-dev,
  libprofile-dev,
  mce-dev,
 Standards-Version: 4.3.0
