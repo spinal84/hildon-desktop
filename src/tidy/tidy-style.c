@@ -610,9 +610,11 @@ tidy_style_construct_effect (TidyStyle   *style,
   alpha = clutter_alpha_new_full (timeline, effect->alpha_func, NULL, NULL);
   g_object_unref (timeline);
 
+  G_GNUC_BEGIN_IGNORE_DEPRECATIONS
   behaviour = g_object_newv (effect->behaviour_type,
                              effect->parameters->len,
                              (GParameter *) effect->parameters->data);
+  G_GNUC_END_IGNORE_DEPRECATIONS
 
   clutter_behaviour_set_alpha (behaviour, alpha);
 
