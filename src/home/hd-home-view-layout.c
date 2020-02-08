@@ -50,7 +50,10 @@ struct _HdHomeViewLayoutPrivate
   layer_t *layer;
 };
 
-G_DEFINE_TYPE (HdHomeViewLayout, hd_home_view_layout, G_TYPE_OBJECT);
+G_DEFINE_TYPE_WITH_CODE (HdHomeViewLayout,
+                         hd_home_view_layout,
+                         G_TYPE_OBJECT,
+                         G_ADD_PRIVATE (HdHomeViewLayout));
 
 static rect_t *
 rect_new (int x1, int y1,
@@ -213,7 +216,7 @@ layer_free (layer_t *layer)
 static void
 hd_home_view_layout_init (HdHomeViewLayout *layout)
 {
-  layout->priv = G_TYPE_INSTANCE_GET_PRIVATE (layout, HD_TYPE_HOME_VIEW_LAYOUT, HdHomeViewLayoutPrivate);
+  layout->priv = hd_home_view_layout_get_instance_private (layout);
 }
 
 static void
@@ -233,8 +236,6 @@ hd_home_view_layout_class_init (HdHomeViewLayoutClass *klass)
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
   object_class->dispose = hd_home_view_layout_dispose;
-
-  g_type_class_add_private (klass, sizeof (HdHomeViewLayoutPrivate));
 }
 
 HdHomeViewLayout *

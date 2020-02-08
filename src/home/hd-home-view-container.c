@@ -94,7 +94,10 @@ enum
   PROP_OFFSET
 };
 
-G_DEFINE_TYPE (HdHomeViewContainer, hd_home_view_container, CLUTTER_TYPE_GROUP);
+G_DEFINE_TYPE_WITH_CODE (HdHomeViewContainer,
+                         hd_home_view_container,
+                         CLUTTER_TYPE_GROUP,
+                         G_ADD_PRIVATE (HdHomeViewContainer));
 
 static void
 hd_home_view_container_update_previous_and_next_view (HdHomeViewContainer *self)
@@ -763,8 +766,6 @@ hd_home_view_container_class_init (HdHomeViewContainerClass *klass)
 
   actor_class->allocate = hd_home_view_container_allocate;
 
-  g_type_class_add_private (klass, sizeof (HdHomeViewContainerPrivate));
-
   g_object_class_install_property (object_class,
                                    PROP_COMP_MGR,
                                    g_param_spec_pointer ("comp-mgr",
@@ -793,8 +794,7 @@ static void
 hd_home_view_container_init (HdHomeViewContainer *self)
 {
   /* Create priv member */
-  self->priv = G_TYPE_INSTANCE_GET_PRIVATE (
-                 self, HD_TYPE_HOME_VIEW_CONTAINER, HdHomeViewContainerPrivate);
+  self->priv = hd_home_view_container_get_instance_private (self);
 }
 
 ClutterActor *

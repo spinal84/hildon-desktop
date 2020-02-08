@@ -33,7 +33,7 @@
 #include "tidy-private.h"
 #include "tidy-stylable.h"
 
-#define TIDY_FRAME_GET_PRIVATE(obj)     (G_TYPE_INSTANCE_GET_PRIVATE ((obj), TIDY_TYPE_FRAME, TidyFramePrivate))
+#define TIDY_FRAME_GET_PRIVATE(obj) (tidy_frame_get_instance_private (obj))
 
 enum
 {
@@ -54,6 +54,7 @@ static ClutterColor default_bg_color = { 0xcc, 0xcc, 0xcc, 0xff };
 static void clutter_container_iface_init (ClutterContainerIface *iface);
 
 G_DEFINE_TYPE_WITH_CODE (TidyFrame, tidy_frame, TIDY_TYPE_ACTOR,
+                         G_ADD_PRIVATE (TidyFrame)
                          G_IMPLEMENT_INTERFACE (CLUTTER_TYPE_CONTAINER,
                                                 clutter_container_iface_init));
 
@@ -325,8 +326,6 @@ tidy_frame_class_init (TidyFrameClass *klass)
 {
   GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
   ClutterActorClass *actor_class = CLUTTER_ACTOR_CLASS (klass);
-
-  g_type_class_add_private (klass, sizeof (TidyFramePrivate));
 
   gobject_class->set_property = tidy_frame_set_property;
   gobject_class->get_property = tidy_frame_get_property;

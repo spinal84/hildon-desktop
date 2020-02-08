@@ -23,7 +23,7 @@ enum
 };
 
 #define TIDY_STYLE_GET_PRIVATE(obj) \
-        (G_TYPE_INSTANCE_GET_PRIVATE ((obj), TIDY_TYPE_STYLE, TidyStylePrivate))
+        (tidy_style_get_instance_private (obj))
 
 typedef struct {
   GType value_type;
@@ -54,7 +54,10 @@ static const ClutterColor tidy_default_active_color = { 0xf5, 0x79, 0x00, 0xff }
 
 static TidyStyle *default_style = NULL;
 
-G_DEFINE_TYPE (TidyStyle, tidy_style, G_TYPE_OBJECT);
+G_DEFINE_TYPE_WITH_CODE (TidyStyle,
+                         tidy_style,
+                         G_TYPE_OBJECT,
+                         G_ADD_PRIVATE (TidyStyle));
 
 static StyleProperty *
 style_property_new (const gchar *value_name,
@@ -249,8 +252,6 @@ static void
 tidy_style_class_init (TidyStyleClass *klass)
 {
   GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
-
-  g_type_class_add_private (klass, sizeof (TidyStylePrivate));
 
   gobject_class->finalize = tidy_style_finalize;
 

@@ -183,9 +183,10 @@ struct _TidyBlurGroupPrivate
  *
  */
 
-G_DEFINE_TYPE (TidyBlurGroup,
-               tidy_blur_group,
-               CLUTTER_TYPE_GROUP);
+G_DEFINE_TYPE_WITH_CODE (TidyBlurGroup,
+                         tidy_blur_group,
+                         CLUTTER_TYPE_GROUP,
+                         G_ADD_PRIVATE (TidyBlurGroup));
 
 /* When the blur group's children are modified we need to
    re-paint to the source texture. When it is only us that
@@ -878,8 +879,6 @@ tidy_blur_group_class_init (TidyBlurGroupClass *klass)
   GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
   ClutterActorClass *actor_class = CLUTTER_ACTOR_CLASS (klass);
 
-  g_type_class_add_private (klass, sizeof (TidyBlurGroupPrivate));
-
   gobject_class->dispose = tidy_blur_group_dispose;
 
   /* Provide implementations for ClutterActor vfuncs: */
@@ -895,9 +894,7 @@ tidy_blur_group_init (TidyBlurGroup *self)
   gint i,x,y;
   guchar dither_data[CHEQUER_SIZE*CHEQUER_SIZE];
 
-  priv = self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self,
-                                                   TIDY_TYPE_BLUR_GROUP,
-                                                   TidyBlurGroupPrivate);
+  priv = self->priv = tidy_blur_group_get_instance_private (self);
   priv->blur_step = 0;
   priv->current_blur_step = 0;
   priv->max_blur_step = 0;

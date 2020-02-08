@@ -38,9 +38,10 @@ struct _TidyCachedGroupPrivate
   float downsample;
 };
 
-G_DEFINE_TYPE (TidyCachedGroup,
-               tidy_cached_group,
-               CLUTTER_TYPE_GROUP);
+G_DEFINE_TYPE_WITH_CODE (TidyCachedGroup,
+                         tidy_cached_group,
+                         CLUTTER_TYPE_GROUP,
+                         G_ADD_PRIVATE (TidyCachedGroup));
 
 /* An implementation for the ClutterGroup::paint() vfunc,
    painting all the child actors: */
@@ -218,8 +219,6 @@ tidy_cached_group_class_init (TidyCachedGroupClass *klass)
   GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
   ClutterActorClass *actor_class = CLUTTER_ACTOR_CLASS (klass);
 
-  g_type_class_add_private (klass, sizeof (TidyCachedGroupPrivate));
-
   gobject_class->dispose = tidy_cached_group_dispose;
 
   /* Provide implementations for ClutterActor vfuncs: */
@@ -231,9 +230,7 @@ tidy_cached_group_init (TidyCachedGroup *self)
 {
   TidyCachedGroupPrivate *priv;
 
-  priv = self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self,
-                                                   TIDY_TYPE_CACHED_GROUP,
-                                                   TidyCachedGroupPrivate);
+  priv = self->priv = tidy_cached_group_get_instance_private (self);
   priv->cache_amount = 0;
   priv->downsample = TIDY_CACHED_GROUP_DEFAULT_DOWNSAMPLING;
   priv->use_alpha = FALSE;

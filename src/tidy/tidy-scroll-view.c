@@ -30,16 +30,6 @@
 static void clutter_container_iface_init (ClutterContainerIface *iface);
 static void tidy_stylable_iface_init (TidyStylableIface *iface);
 
-G_DEFINE_TYPE_WITH_CODE (TidyScrollView, tidy_scroll_view, TIDY_TYPE_ACTOR,
-                         G_IMPLEMENT_INTERFACE (CLUTTER_TYPE_CONTAINER,
-                                                clutter_container_iface_init)
-                         G_IMPLEMENT_INTERFACE (TIDY_TYPE_STYLABLE,
-                                                tidy_stylable_iface_init))
-
-#define SCROLL_VIEW_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), \
-                                TIDY_TYPE_SCROLL_VIEW, \
-                                TidyScrollViewPrivate))
-
 struct _TidyScrollViewPrivate
 {
   ClutterActor   *child;
@@ -50,6 +40,15 @@ struct _TidyScrollViewPrivate
   TidyAdjustment *hadjustment;
   TidyAdjustment *vadjustment;
 };
+
+G_DEFINE_TYPE_WITH_CODE (TidyScrollView, tidy_scroll_view, TIDY_TYPE_ACTOR,
+                         G_ADD_PRIVATE (TidyScrollView)
+                         G_IMPLEMENT_INTERFACE (CLUTTER_TYPE_CONTAINER,
+                                                clutter_container_iface_init)
+                         G_IMPLEMENT_INTERFACE (TIDY_TYPE_STYLABLE,
+                                                tidy_stylable_iface_init))
+
+#define SCROLL_VIEW_PRIVATE(o) (tidy_scroll_view_get_instance_private (o))
 
 enum {
   PROP_0,
@@ -316,8 +315,6 @@ tidy_scroll_view_class_init (TidyScrollViewClass *klass)
 {
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
   ClutterActorClass *actor_class = CLUTTER_ACTOR_CLASS (klass);
-
-  g_type_class_add_private (klass, sizeof (TidyScrollViewPrivate));
 
   object_class->get_property = tidy_scroll_view_get_property;
   object_class->set_property = tidy_scroll_view_set_property;

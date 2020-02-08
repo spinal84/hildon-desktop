@@ -73,10 +73,8 @@
  * Tunable. */
 #define MANUAL_SCROLL_PPS                   200
 
-#define HD_SCROLLABLE_GROUP_GET_PRIVATE(obj)            \
-  G_TYPE_INSTANCE_GET_PRIVATE((obj),                    \
-                              HD_TYPE_SCROLLABLE_GROUP, \
-                              HdScrollableGroupPrivate)
+#define HD_SCROLLABLE_GROUP_GET_PRIVATE(obj)  \
+  hd_scrollable_group_get_instance_private (HD_SCROLLABLE_GROUP (obj))
 
 /* Type definitions {{{ */
 typedef struct
@@ -129,9 +127,13 @@ typedef struct
 } HdScrollableGroupPrivate;
 /* Type definitions }}} */
 
-/* Declare @hd_scrollable_group_parent_class here because
- * we #G_DEFINE_TYPE() late in the source code. */
-static gpointer hd_scrollable_group_parent_class;
+static void hd_scrollable_group_iface_init (TidyScrollableInterface *);
+
+G_DEFINE_TYPE_WITH_CODE (HdScrollableGroup, hd_scrollable_group,
+                         CLUTTER_TYPE_GROUP,
+                         G_ADD_PRIVATE (HdScrollableGroup)
+                         G_IMPLEMENT_INTERFACE (TIDY_TYPE_SCROLLABLE,
+                                       hd_scrollable_group_iface_init));
 
 /* #GObject overrides {{{ */
 static void
@@ -555,8 +557,6 @@ hd_scrollable_group_class_init (HdScrollableGroupClass * klass)
   g_object_class_override_property (G_OBJECT_CLASS (klass),
                                     HD_SCROLLABLE_GROUP_VERTICAL,
                                     "vadjustment");
-
-  g_type_class_add_private (klass, sizeof (HdScrollableGroupPrivate));
 }
 
 /* #TidyScrollable interface initialization. */
@@ -596,11 +596,6 @@ hd_scrollable_group_init (HdScrollableGroup * self)
   setup_direction (self, &priv->horizontal);
   setup_direction (self, &priv->vertical);
 }
-
-G_DEFINE_TYPE_WITH_CODE (HdScrollableGroup, hd_scrollable_group,
-                         CLUTTER_TYPE_GROUP,
-                         G_IMPLEMENT_INTERFACE (TIDY_TYPE_SCROLLABLE,
-                                       hd_scrollable_group_iface_init));
 /* Constructors }}} */
 
 /* vim: set foldmethod=marker: */

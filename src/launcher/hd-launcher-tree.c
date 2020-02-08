@@ -17,7 +17,8 @@
 #define GMENU_I_KNOW_THIS_IS_UNSTABLE
 #include <gmenu-tree.h>
 
-#define HD_LAUNCHER_TREE_GET_PRIVATE(obj)       (G_TYPE_INSTANCE_GET_PRIVATE ((obj), HD_TYPE_LAUNCHER_TREE, HdLauncherTreePrivate))
+#define HD_LAUNCHER_TREE_GET_PRIVATE(obj)  \
+  (hd_launcher_tree_get_instance_private (HD_LAUNCHER_TREE (obj)))
 
 typedef struct
 {
@@ -60,7 +61,10 @@ enum
 
 static gulong tree_signals[LAST_SIGNAL] = { 0, };
 
-G_DEFINE_TYPE (HdLauncherTree, hd_launcher_tree, G_TYPE_OBJECT);
+G_DEFINE_TYPE_WITH_CODE (HdLauncherTree,
+                         hd_launcher_tree,
+                         G_TYPE_OBJECT,
+                         G_ADD_PRIVATE (HdLauncherTree));
 
 static void hd_launcher_tree_handle_tree_changed (GMenuTree *menu_tree,
                                                   gpointer user_data);
@@ -289,8 +293,6 @@ static void
 hd_launcher_tree_class_init (HdLauncherTreeClass *klass)
 {
   GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
-
-  g_type_class_add_private (klass, sizeof (HdLauncherTreePrivate));
 
   gobject_class->finalize = hd_launcher_tree_finalize;
 

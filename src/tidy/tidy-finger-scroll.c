@@ -38,12 +38,6 @@
 #define TIDY_FINGER_SCROLL_FADE_SCROLLBAR_OUT_TIME (500)
 #define TIDY_FINGER_SCROLL_DRAG_TRASHOLD (25)
 
-G_DEFINE_TYPE (TidyFingerScroll, tidy_finger_scroll, TIDY_TYPE_SCROLL_VIEW)
-
-#define FINGER_SCROLL_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), \
-                                  TIDY_TYPE_FINGER_SCROLL, \
-                                  TidyFingerScrollPrivate))
-
 typedef struct {
   /* Units to store the origin of a click when scrolling */
   ClutterUnit x;
@@ -86,6 +80,13 @@ struct _TidyFingerScrollPrivate
    * this to be able to restore the state afterwards */
   gboolean               old_capture_motion_events;
 };
+
+G_DEFINE_TYPE_WITH_CODE (TidyFingerScroll,
+                         tidy_finger_scroll,
+                         TIDY_TYPE_SCROLL_VIEW,
+                         G_ADD_PRIVATE (TidyFingerScroll))
+
+#define FINGER_SCROLL_PRIVATE(o) (tidy_finger_scroll_get_instance_private (o))
 
 enum {
   PROP_MODE = 1,
@@ -185,8 +186,6 @@ static void
 tidy_finger_scroll_class_init (TidyFingerScrollClass *klass)
 {
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
-
-  g_type_class_add_private (klass, sizeof (TidyFingerScrollPrivate));
 
   object_class->get_property = tidy_finger_scroll_get_property;
   object_class->set_property = tidy_finger_scroll_set_property;

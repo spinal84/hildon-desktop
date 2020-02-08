@@ -32,7 +32,8 @@
 
 #include <dbus/dbus.h>
 
-#define HD_RUNNING_APP_GET_PRIVATE(obj)        (G_TYPE_INSTANCE_GET_PRIVATE ((obj), HD_TYPE_RUNNING_APP, HdRunningAppPrivate))
+#define HD_RUNNING_APP_GET_PRIVATE(obj)  \
+  (hd_running_app_get_instance_private (HD_RUNNING_APP (obj)))
 
 struct _HdRunningAppPrivate
 {
@@ -42,7 +43,10 @@ struct _HdRunningAppPrivate
   time_t last_launch;
 };
 
-G_DEFINE_TYPE (HdRunningApp, hd_running_app, G_TYPE_OBJECT);
+G_DEFINE_TYPE_WITH_CODE (HdRunningApp,
+                         hd_running_app,
+                         G_TYPE_OBJECT,
+                         G_ADD_PRIVATE (HdRunningApp));
 
 static void
 hd_running_app_finalize (GObject *gobject)
@@ -60,8 +64,6 @@ static void
 hd_running_app_class_init (HdRunningAppClass *klass)
 {
   GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
-
-  g_type_class_add_private (klass, sizeof (HdRunningAppPrivate));
 
   gobject_class->finalize = hd_running_app_finalize;
 }

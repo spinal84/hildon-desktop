@@ -26,15 +26,6 @@
 
 /* ------------------------------------------------------------------------- */
 
-G_DEFINE_TYPE (TidyMemTexture,
-	       tidy_mem_texture,
-	       CLUTTER_TYPE_ACTOR);
-
-#define CLUTTER_MEM_TEXTURE_GET_PRIVATE(obj) \
-(G_TYPE_INSTANCE_GET_PRIVATE ((obj), TIDY_TYPE_MEM_TEXTURE, TidyMemTexturePrivate))
-
-/* ------------------------------------------------------------------------- */
-
 typedef struct _TidyMemTextureTile
 {
   ClutterGeometry pos; /* actual position in texture */
@@ -64,6 +55,16 @@ struct _TidyMemTexturePrivate
 
   GList *tiles; /* of TidyMemTextureTile */
 };
+
+/* ------------------------------------------------------------------------- */
+
+G_DEFINE_TYPE_WITH_CODE (TidyMemTexture,
+                         tidy_mem_texture,
+                         CLUTTER_TYPE_ACTOR,
+                         G_ADD_PRIVATE (TidyMemTexture));
+
+#define CLUTTER_MEM_TEXTURE_GET_PRIVATE(obj) \
+(tidy_mem_texture_get_instance_private (obj))
 
 /* ------------------------------------------------------------------------- */
 
@@ -163,8 +164,6 @@ tidy_mem_texture_class_init (TidyMemTextureClass *klass)
 
   gobject_class->finalize     = tidy_mem_texture_finalize;
   gobject_class->dispose      = tidy_mem_texture_dispose;
-
-  g_type_class_add_private (gobject_class, sizeof (TidyMemTexturePrivate));
 }
 
 static void

@@ -40,10 +40,12 @@ struct _HdOrientationLockPrivate
   gboolean orientation_lock_landscape;
 };
 
-#define HD_ORIENTATION_LOCK_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), \
-                                     HD_TYPE_ORIENTATION_LOCK, HdOrientationLockPrivate))
+#define HD_ORIENTATION_LOCK_GET_PRIVATE(obj) (hd_orientation_lock_get_instance_private (obj))
 
-G_DEFINE_TYPE (HdOrientationLock, hd_orientation_lock, G_TYPE_OBJECT);
+G_DEFINE_TYPE_WITH_CODE (HdOrientationLock,
+                         hd_orientation_lock,
+                         G_TYPE_OBJECT,
+                         G_ADD_PRIVATE (HdOrientationLock));
 
 #define GCONF_KEY_ORIENTATION_LOCK "/apps/osso/hildon-desktop/orientation_lock"
 /* TRUE - Portrait, FALSE - landscape. */
@@ -81,8 +83,6 @@ static void
 hd_orientation_lock_class_init (HdOrientationLockClass *klass)
 {
   GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
-
-  g_type_class_add_private (klass, sizeof (HdOrientationLockPrivate));
 
   gobject_class->dispose = hd_orientation_lock_dispose;
 }
@@ -185,7 +185,8 @@ hd_orientation_lock_gconf_value_changed (GConfClient *client,
 gboolean
 hd_orientation_lock_is_enabled (void)
 {
-    return HD_ORIENTATION_LOCK_GET_PRIVATE (hd_orientation_lock_get ())->orientation_lock_enabled;
+  HdOrientationLockPrivate *priv = HD_ORIENTATION_LOCK_GET_PRIVATE (hd_orientation_lock_get ());
+  return priv->orientation_lock_enabled;
 }
 
 /* Returns TRUE if window should be locked to landscape mode. */

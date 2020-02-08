@@ -18,7 +18,8 @@ enum
   PROP_VALUE_TYPE
 };
 
-#define TIDY_INTERVAL_GET_PRIVATE(obj)  (G_TYPE_INSTANCE_GET_PRIVATE ((obj), TIDY_TYPE_INTERVAL, TidyIntervalPrivate))
+#define TIDY_INTERVAL_GET_PRIVATE(obj)  \
+  (tidy_interval_get_instance_private (TIDY_INTERVAL (obj)))
 
 struct _TidyIntervalPrivate
 {
@@ -27,7 +28,10 @@ struct _TidyIntervalPrivate
   GValue *values;
 };
 
-G_DEFINE_TYPE (TidyInterval, tidy_interval, G_TYPE_INITIALLY_UNOWNED);
+G_DEFINE_TYPE_WITH_CODE (TidyInterval,
+                         tidy_interval,
+                         G_TYPE_INITIALLY_UNOWNED,
+                         G_ADD_PRIVATE (TidyInterval));
 
 static void
 tidy_interval_finalize (GObject *gobject)
@@ -85,8 +89,6 @@ tidy_interval_class_init (TidyIntervalClass *klass)
 {
   GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
   GParamSpec *pspec;
-
-  g_type_class_add_private (klass, sizeof (TidyIntervalPrivate));
 
   gobject_class->set_property = tidy_interval_set_property,
   gobject_class->get_property = tidy_interval_get_property;

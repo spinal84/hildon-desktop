@@ -57,7 +57,8 @@ hd_launcher_item_type_get_type (void)
   return gtype;
 }
 
-#define HD_LAUNCHER_ITEM_GET_PRIVATE(obj)       (G_TYPE_INSTANCE_GET_PRIVATE ((obj), HD_TYPE_LAUNCHER_ITEM, HdLauncherItemPrivate))
+#define HD_LAUNCHER_ITEM_GET_PRIVATE(obj)  \
+  (hd_launcher_item_get_instance_private (HD_LAUNCHER_ITEM (obj)))
 
 struct _HdLauncherItemPrivate
 {
@@ -84,7 +85,10 @@ enum
   PROP_LAUNCHER_ITEM_ICON_NAME,
 };
 
-G_DEFINE_ABSTRACT_TYPE (HdLauncherItem, hd_launcher_item, G_TYPE_OBJECT);
+G_DEFINE_ABSTRACT_TYPE_WITH_CODE (HdLauncherItem,
+                                  hd_launcher_item,
+                                  G_TYPE_OBJECT,
+                                  G_ADD_PRIVATE (HdLauncherItem));
 
 /* Desktop file entries */
 #define HD_DESKTOP_ENTRY_TYPE               "Type"
@@ -177,8 +181,6 @@ hd_launcher_item_class_init (HdLauncherItemClass *klass)
 {
   GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
   GParamSpec *pspec;
-
-  g_type_class_add_private (klass, sizeof (HdLauncherItemPrivate));
 
   gobject_class->get_property = hd_launcher_item_get_property;
   gobject_class->finalize     = hd_launcher_item_finalize;

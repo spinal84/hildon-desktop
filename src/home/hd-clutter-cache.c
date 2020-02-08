@@ -39,8 +39,7 @@ struct _HdClutterCachePrivate
 
 G_DEFINE_TYPE (HdClutterCache, hd_clutter_cache, CLUTTER_TYPE_GROUP);
 #define HD_CLUTTER_CACHE_GET_PRIVATE(obj) \
-                (G_TYPE_INSTANCE_GET_PRIVATE ((obj), \
-                HD_TYPE_CLUTTER_CACHE, HdClutterCachePrivate))
+                (hd_clutter_cache_get_instance_private (obj))
 
 /* ------------------------------------------------------------------------- */
 

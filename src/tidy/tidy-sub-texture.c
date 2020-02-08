@@ -18,19 +18,20 @@ enum
   PROP_PARENT_TEXTURE,
 };
 
-G_DEFINE_TYPE (TidySubTexture,
-	       tidy_sub_texture,
-	       CLUTTER_TYPE_ACTOR);
-
-#define CLUTTER_SUB_TEXTURE_GET_PRIVATE(obj) \
-(G_TYPE_INSTANCE_GET_PRIVATE ((obj), TIDY_TYPE_SUB_TEXTURE, TidySubTexturePrivate))
-
 struct _TidySubTexturePrivate
 {
   ClutterTexture      *parent_texture;
   ClutterGeometry      region; /* The region of the parent texture to draw */
   gboolean             tiled; /* should the texture be tiled rather than stretched? */
 };
+
+G_DEFINE_TYPE_WITH_CODE (TidySubTexture,
+                         tidy_sub_texture,
+                         CLUTTER_TYPE_ACTOR,
+                         G_ADD_PRIVATE (TidySubTexture));
+
+#define CLUTTER_SUB_TEXTURE_GET_PRIVATE(obj) \
+  (tidy_sub_texture_get_instance_private (obj))
 
 static void
 tidy_sub_texture_get_preferred_width (ClutterActor *self,
@@ -353,8 +354,6 @@ tidy_sub_texture_class_init (TidySubTextureClass *klass)
 			  G_PARAM_READABLE | G_PARAM_WRITABLE |
 			  G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK |
 			  G_PARAM_STATIC_BLURB ));
-
-  g_type_class_add_private (gobject_class, sizeof (TidySubTexturePrivate));
 }
 
 static void

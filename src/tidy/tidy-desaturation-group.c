@@ -111,9 +111,10 @@ struct _TidyDesaturationGroupPrivate
  *
  */
 
-G_DEFINE_TYPE (TidyDesaturationGroup,
-               tidy_desaturation_group,
-               CLUTTER_TYPE_GROUP);
+G_DEFINE_TYPE_WITH_CODE (TidyDesaturationGroup,
+                         tidy_desaturation_group,
+                         CLUTTER_TYPE_GROUP,
+                         G_ADD_PRIVATE (TidyDesaturationGroup));
 
 /* When the desaturation group's children are modified we need to
    re-paint to the source texture. When it is only us that
@@ -405,8 +406,6 @@ tidy_desaturation_group_class_init (TidyDesaturationGroupClass *klass)
   GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
   ClutterActorClass *actor_class = CLUTTER_ACTOR_CLASS (klass);
 
-  g_type_class_add_private (klass, sizeof (TidyDesaturationGroupPrivate));
-
   gobject_class->dispose = tidy_desaturation_group_dispose;
 
   actor_class->paint = tidy_desaturation_group_paint;
@@ -418,9 +417,7 @@ tidy_desaturation_group_init (TidyDesaturationGroup *self)
 {
   TidyDesaturationGroupPrivate *priv;
 
-  priv = self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self,
-                                                   TIDY_TYPE_DESATURATION_GROUP,
-                                                   TidyDesaturationGroupPrivate);
+  priv = self->priv = tidy_desaturation_group_get_instance_private (self);
   priv->desaturation_step = 0;
   priv->current_desaturation_step = 0;
   priv->source_changed = TRUE;

@@ -44,7 +44,8 @@
                             G_PARAM_STATIC_NAME | \
                             G_PARAM_STATIC_BLURB)
 
-#define HD_LAUNCHER_TILE_GET_PRIVATE(obj)       (G_TYPE_INSTANCE_GET_PRIVATE ((obj), HD_TYPE_LAUNCHER_TILE, HdLauncherTilePrivate))
+#define HD_LAUNCHER_TILE_GET_PRIVATE(obj)  \
+  (hd_launcher_tile_get_instance_private (HD_LAUNCHER_TILE (obj)))
 
 #define HD_LAUNCHER_TILE_LONG_PRESS_DUR (1000)
 
@@ -109,7 +110,10 @@ static void hd_launcher_tile_allocate (ClutterActor          *self,
                                        const ClutterActorBox *box,
                                        gboolean       absolute_origin_changed);
 
-G_DEFINE_TYPE (HdLauncherTile, hd_launcher_tile, CLUTTER_TYPE_GROUP);
+G_DEFINE_TYPE_WITH_CODE (HdLauncherTile,
+                         hd_launcher_tile,
+                         CLUTTER_TYPE_GROUP,
+                         G_ADD_PRIVATE (HdLauncherTile));
 
 static void
 hd_launcher_tile_class_init (HdLauncherTileClass *klass)
@@ -117,8 +121,6 @@ hd_launcher_tile_class_init (HdLauncherTileClass *klass)
   GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
   ClutterActorClass *actor_class = CLUTTER_ACTOR_CLASS (klass);
   GParamSpec *pspec;
-
-  g_type_class_add_private (klass, sizeof (HdLauncherTilePrivate));
 
   gobject_class->get_property = hd_launcher_tile_get_property;
   gobject_class->set_property = hd_launcher_tile_set_property;

@@ -55,13 +55,6 @@ enum
   "  gl_FragColor = color;\n"
   "}\n";
 
-G_DEFINE_TYPE (TidyHighlight,
-	       tidy_highlight,
-	       CLUTTER_TYPE_ACTOR);
-
-#define CLUTTER_HIGHLIGHT_GET_PRIVATE(obj) \
-(G_TYPE_INSTANCE_GET_PRIVATE ((obj), TIDY_TYPE_HIGHLIGHT, TidyHighlightPrivate))
-
 struct _TidyHighlightPrivate
 {
   ClutterTexture      *parent_texture;
@@ -70,6 +63,14 @@ struct _TidyHighlightPrivate
   float                amount;
   ClutterColor         color;
 };
+
+G_DEFINE_TYPE_WITH_CODE (TidyHighlight,
+                         tidy_highlight,
+                         CLUTTER_TYPE_ACTOR,
+                         G_ADD_PRIVATE (TidyHighlight));
+
+#define CLUTTER_HIGHLIGHT_GET_PRIVATE(obj)  \
+  (tidy_highlight_get_instance_private (obj))
 
 static void
 tidy_highlight_get_preferred_width (ClutterActor *self,
@@ -345,8 +346,6 @@ tidy_highlight_class_init (TidyHighlightClass *klass)
 			  G_PARAM_READABLE | G_PARAM_WRITABLE |
 			  G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK |
 			  G_PARAM_STATIC_BLURB ));
-
-  g_type_class_add_private (gobject_class, sizeof (TidyHighlightPrivate));
 }
 
 static void

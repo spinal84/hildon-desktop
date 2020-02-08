@@ -65,7 +65,7 @@ enum
 
 #define I_(str) (g_intern_static_string ((str)))
 #define HD_LAUNCHER_EDITOR_GET_PRIVATE(object) \
-  (G_TYPE_INSTANCE_GET_PRIVATE ((object), HD_TYPE_LAUNCHER_EDITOR, HdLauncherEditorPrivate))
+  (hd_launcher_editor_get_instance_private (object))
 
 struct _HdLauncherEditorPrivate
 {
@@ -92,7 +92,10 @@ enum
 
 static guint launcher_editor_signals[LAST_SIGNAL] = {0, };
 
-G_DEFINE_TYPE (HdLauncherEditor, hd_launcher_editor, HILDON_TYPE_WINDOW);
+G_DEFINE_TYPE_WITH_CODE (HdLauncherEditor,
+                         hd_launcher_editor,
+                         HILDON_TYPE_WINDOW,
+                         G_ADD_PRIVATE (HdLauncherEditor));
 
 static void
 _hd_launcher_editor_load (HdLauncherEditor *editor)
@@ -383,8 +386,6 @@ static void
 hd_launcher_editor_class_init (HdLauncherEditorClass *klass)
 {
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
-
-  g_type_class_add_private (klass, sizeof (HdLauncherEditorPrivate));
 
   object_class->constructed = hd_launcher_editor_constructed;
   object_class->dispose = hd_launcher_editor_dispose;

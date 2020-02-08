@@ -246,15 +246,16 @@ static void update_edge_indication_visibility (HdHome *home,
 static void
 update_dbus_interfaces_from_gconf (HdHome *home, HdHomeGconfUpdateMode what);
 
-G_DEFINE_TYPE (HdHome, hd_home, CLUTTER_TYPE_GROUP);
+G_DEFINE_TYPE_WITH_CODE (HdHome,
+                         hd_home,
+                         CLUTTER_TYPE_GROUP,
+                         G_ADD_PRIVATE (HdHome));
 
 static void
 hd_home_class_init (HdHomeClass *klass)
 {
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
   GParamSpec   *pspec;
-
-  g_type_class_add_private (klass, sizeof (HdHomePrivate));
 
   object_class->dispose      = hd_home_dispose;
   object_class->finalize     = hd_home_finalize;
@@ -1580,8 +1581,7 @@ hd_home_init (HdHome *self)
   GError *error = NULL;
   GConfClient *gconf_client;
 
-  priv = self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, HD_TYPE_HOME,
-                                                   HdHomePrivate);
+  priv = self->priv = hd_home_get_instance_private (self);
 
   priv->initial_x = -1;
   priv->initial_y = -1;

@@ -61,13 +61,6 @@ enum
 
 static void tidy_stylable_iface_init (TidyStylableIface *iface);
 
-G_DEFINE_ABSTRACT_TYPE_WITH_CODE (TidyActor, tidy_actor, CLUTTER_TYPE_ACTOR,
-                                  G_IMPLEMENT_INTERFACE (TIDY_TYPE_STYLABLE,
-                                                         tidy_stylable_iface_init));
-
-#define TIDY_ACTOR_GET_PRIVATE(obj) \
-        (G_TYPE_INSTANCE_GET_PRIVATE ((obj), TIDY_TYPE_ACTOR, TidyActorPrivate))
-
 struct _TidyActorPrivate
 {
   TidyStyle *style;
@@ -77,6 +70,13 @@ struct _TidyActorPrivate
   ClutterFixed x_align;
   ClutterFixed y_align;
 };
+
+G_DEFINE_ABSTRACT_TYPE_WITH_CODE (TidyActor, tidy_actor, CLUTTER_TYPE_ACTOR,
+                                  G_ADD_PRIVATE (TidyActor)
+                                  G_IMPLEMENT_INTERFACE (TIDY_TYPE_STYLABLE,
+                                                         tidy_stylable_iface_init));
+
+#define TIDY_ACTOR_GET_PRIVATE(obj) (tidy_actor_get_instance_private (obj))
 
 static void
 tidy_actor_set_property (GObject      *gobject,
@@ -169,8 +169,6 @@ static void
 tidy_actor_class_init (TidyActorClass *klass)
 {
   GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
-
-  g_type_class_add_private (klass, sizeof (TidyActorPrivate));
 
   gobject_class->set_property = tidy_actor_set_property;
   gobject_class->get_property = tidy_actor_get_property;

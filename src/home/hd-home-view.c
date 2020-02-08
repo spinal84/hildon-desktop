@@ -169,7 +169,10 @@ struct _HdHomeViewAppletData
 static HdHomeViewAppletData *applet_data_new  (ClutterActor *actor);
 static void                  applet_data_free (HdHomeViewAppletData *data);
 
-G_DEFINE_TYPE (HdHomeView, hd_home_view, CLUTTER_TYPE_GROUP);
+G_DEFINE_TYPE_WITH_CODE (HdHomeView,
+                         hd_home_view,
+                         CLUTTER_TYPE_GROUP,
+                         G_ADD_PRIVATE (HdHomeView));
 
 static void
 hd_home_view_allocate (ClutterActor          *actor,
@@ -197,8 +200,6 @@ hd_home_view_class_init (HdHomeViewClass *klass)
   ClutterActorClass *actor_class  = CLUTTER_ACTOR_CLASS (klass);
   GObjectClass      *object_class = G_OBJECT_CLASS (klass);
   GParamSpec        *pspec;
-
-  g_type_class_add_private (klass, sizeof (HdHomeViewPrivate));
 
   actor_class->allocate      = hd_home_view_allocate;
 
@@ -417,7 +418,7 @@ hd_home_view_constructed (GObject *object)
 static void
 hd_home_view_init (HdHomeView *self)
 {
-  self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, HD_TYPE_HOME_VIEW, HdHomeViewPrivate);
+  self->priv = hd_home_view_get_instance_private (self);
 
   clutter_actor_set_name(CLUTTER_ACTOR(self), "HdHomeView");
   /* Explicitly enable maemo-specific visibility detection to cut down

@@ -197,10 +197,13 @@ struct _HdTitleBarPrivate
 
 /* ------------------------------------------------------------------------- */
 
-G_DEFINE_TYPE (HdTitleBar, hd_title_bar, CLUTTER_TYPE_GROUP);
+G_DEFINE_TYPE_WITH_CODE (HdTitleBar,
+                         hd_title_bar,
+                         CLUTTER_TYPE_GROUP,
+                         G_ADD_PRIVATE (HdTitleBar));
+
 #define HD_TITLE_BAR_GET_PRIVATE(obj) \
-                (G_TYPE_INSTANCE_GET_PRIVATE ((obj), \
-                HD_TYPE_TITLE_BAR, HdTitleBarPrivate))
+                (hd_title_bar_get_instance_private (obj))
 
 static void
 hd_title_bar_stage_allocation_changed (HdTitleBar *bar, GParamSpec *unused,
@@ -484,8 +487,6 @@ static void
 hd_title_bar_class_init (HdTitleBarClass *klass)
 {
   GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
-
-  g_type_class_add_private (klass, sizeof (HdTitleBarPrivate));
 
   gobject_class->dispose = hd_title_bar_dispose;
 

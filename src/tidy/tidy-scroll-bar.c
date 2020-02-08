@@ -36,12 +36,6 @@ static void tidy_stylable_iface_init (TidyStylableIface *iface);
 static void on_style_change (TidyStyle     *style,
                              TidyScrollBar *bar);
 
-G_DEFINE_TYPE_WITH_CODE (TidyScrollBar, tidy_scroll_bar, TIDY_TYPE_ACTOR,
-                         G_IMPLEMENT_INTERFACE (TIDY_TYPE_STYLABLE,
-                                                tidy_stylable_iface_init))
-
-#define TIDY_SCROLL_BAR_GET_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), TIDY_TYPE_SCROLL_BAR, TidyScrollBarPrivate))
-
 struct _TidyScrollBarPrivate
 {
   TidyAdjustment *adjustment;
@@ -55,6 +49,14 @@ struct _TidyScrollBarPrivate
   ClutterColor    bg_color;
   
 };
+
+G_DEFINE_TYPE_WITH_CODE (TidyScrollBar, tidy_scroll_bar, TIDY_TYPE_ACTOR,
+                         G_ADD_PRIVATE (TidyScrollBar)
+                         G_IMPLEMENT_INTERFACE (TIDY_TYPE_STYLABLE,
+                                                tidy_stylable_iface_init))
+
+#define TIDY_SCROLL_BAR_GET_PRIVATE(o)  \
+  (tidy_scroll_bar_get_instance_private (o))
 
 enum
 {
@@ -331,8 +333,6 @@ tidy_scroll_bar_class_init (TidyScrollBarClass *klass)
 {
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
   ClutterActorClass *actor_class = CLUTTER_ACTOR_CLASS (klass);
-
-  g_type_class_add_private (klass, sizeof (TidyScrollBarPrivate));
 
   object_class->get_property = tidy_scroll_bar_get_property;
   object_class->set_property = tidy_scroll_bar_set_property;

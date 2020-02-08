@@ -120,24 +120,6 @@ hd_render_manager_state_get_type (void)
 }
 /* ------------------------------------------------------------------------- */
 
-/* ------------------------------------------------------------------------- */
-
-G_DEFINE_TYPE (HdRenderManager, hd_render_manager, TIDY_TYPE_CACHED_GROUP);
-#define HD_RENDER_MANAGER_GET_PRIVATE(obj) \
-                (G_TYPE_INSTANCE_GET_PRIVATE ((obj), \
-                HD_TYPE_RENDER_MANAGER, HdRenderManagerPrivate))
-
-/* The HdRenderManager singleton */
-static HdRenderManager *render_manager = NULL;
-
-/* HdRenderManager properties */
-enum
-{
-  PROP_0,
-  PROP_STATE,
-};
-/* ------------------------------------------------------------------------- */
-
 typedef enum
 {
   HDRM_BLUR_NONE = 0,
@@ -246,6 +228,26 @@ struct _HdRenderManagerPrivate {
   GdkRegion           *current_input_viewport;
   GdkRegion           *new_input_viewport;
   guint                input_viewport_callback;
+};
+
+/* ------------------------------------------------------------------------- */
+
+G_DEFINE_TYPE_WITH_CODE (HdRenderManager,
+                         hd_render_manager,
+                         TIDY_TYPE_CACHED_GROUP,
+                         G_ADD_PRIVATE (HdRenderManager));
+
+#define HD_RENDER_MANAGER_GET_PRIVATE(obj) \
+                (hd_render_manager_get_instance_private (HD_RENDER_MANAGER (obj)))
+
+/* The HdRenderManager singleton */
+static HdRenderManager *render_manager = NULL;
+
+/* HdRenderManager properties */
+enum
+{
+  PROP_0,
+  PROP_STATE,
 };
 
 /* ------------------------------------------------------------------------- */
@@ -455,8 +457,6 @@ hd_render_manager_class_init (HdRenderManagerClass *klass)
 {
   GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
   GParamSpec *pspec;
-
-  g_type_class_add_private (klass, sizeof (HdRenderManagerPrivate));
 
   gobject_class->get_property = hd_render_manager_get_property;
   gobject_class->set_property = hd_render_manager_set_property;

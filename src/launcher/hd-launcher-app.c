@@ -47,7 +47,8 @@
 #define OSSO_BUS_ROOT          "com.nokia"
 #define OSSO_BUS_TOP           "top_application"
 
-#define HD_LAUNCHER_APP_GET_PRIVATE(obj)        (G_TYPE_INSTANCE_GET_PRIVATE ((obj), HD_TYPE_LAUNCHER_APP, HdLauncherAppPrivate))
+#define HD_LAUNCHER_APP_GET_PRIVATE(obj)  \
+  (hd_launcher_app_get_instance_private (HD_LAUNCHER_APP (obj)))
 
 struct _HdLauncherAppPrivate
 {
@@ -64,7 +65,10 @@ struct _HdLauncherAppPrivate
   gboolean ignore_load;
 };
 
-G_DEFINE_TYPE (HdLauncherApp, hd_launcher_app, HD_TYPE_LAUNCHER_ITEM);
+G_DEFINE_TYPE_WITH_CODE (HdLauncherApp,
+                         hd_launcher_app,
+                         HD_TYPE_LAUNCHER_ITEM,
+                         G_ADD_PRIVATE (HdLauncherApp));
 
 gboolean hd_launcher_app_parse_keyfile (HdLauncherItem  *item,
                                         GKeyFile        *key_file,
@@ -89,8 +93,6 @@ hd_launcher_app_class_init (HdLauncherAppClass *klass)
 {
   GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
   HdLauncherItemClass *launcher_class = HD_LAUNCHER_ITEM_CLASS (klass);
-
-  g_type_class_add_private (klass, sizeof (HdLauncherAppPrivate));
 
   gobject_class->finalize = hd_launcher_app_finalize;
   launcher_class->parse_key_file = hd_launcher_app_parse_keyfile;

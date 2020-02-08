@@ -54,7 +54,8 @@
 
 #define HD_LAUNCHER_PAGE_SUB_OPACITY (0.33f)
 
-#define HD_LAUNCHER_PAGE_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), HD_TYPE_LAUNCHER_PAGE, HdLauncherPagePrivate))
+#define HD_LAUNCHER_PAGE_GET_PRIVATE(obj)  \
+  (hd_launcher_page_get_instance_private (HD_LAUNCHER_PAGE (obj)))
 
 struct _HdLauncherPagePrivate
 {
@@ -84,8 +85,10 @@ enum
 
 static guint launcher_page_signals[LAST_SIGNAL] = { 0, };
 
-G_DEFINE_TYPE (HdLauncherPage, hd_launcher_page, CLUTTER_TYPE_GROUP);
-
+G_DEFINE_TYPE_WITH_CODE (HdLauncherPage,
+                         hd_launcher_page,
+                         CLUTTER_TYPE_GROUP,
+                         G_ADD_PRIVATE (HdLauncherPage));
 
 /* Forward declarations. */
 static void hd_launcher_page_constructed (GObject *object);
@@ -103,8 +106,6 @@ static void
 hd_launcher_page_class_init (HdLauncherPageClass *klass)
 {
   GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
-
-  g_type_class_add_private (klass, sizeof (HdLauncherPagePrivate));
 
   gobject_class->constructed  = hd_launcher_page_constructed;
   gobject_class->dispose     = hd_launcher_page_dispose;
@@ -295,7 +296,8 @@ hd_launcher_page_show (ClutterActor *actor)
 ClutterActor *
 hd_launcher_page_get_grid (HdLauncherPage *page)
 {
-  return (HD_LAUNCHER_PAGE_GET_PRIVATE (page))->grid;
+  HdLauncherPagePrivate *priv = HD_LAUNCHER_PAGE_GET_PRIVATE (page);
+  return priv->grid;
 }
 
 void

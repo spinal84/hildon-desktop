@@ -61,7 +61,8 @@
                                  G_PARAM_STATIC_NAME | \
                                  G_PARAM_STATIC_BLURB)
 
-#define HD_LAUNCHER_GRID_GET_PRIVATE(obj)       (G_TYPE_INSTANCE_GET_PRIVATE ((obj), HD_TYPE_LAUNCHER_GRID, HdLauncherGridPrivate))
+#define HD_LAUNCHER_GRID_GET_PRIVATE(obj)  \
+  (hd_launcher_grid_get_instance_private (HD_LAUNCHER_GRID (obj)))
 
 struct _HdLauncherGridPrivate
 {
@@ -127,6 +128,7 @@ static gboolean      hd_launcher_grid_is_portrait (HdLauncherGrid *self);
 G_DEFINE_TYPE_WITH_CODE (HdLauncherGrid,
                          hd_launcher_grid,
                          CLUTTER_TYPE_GROUP,
+                         G_ADD_PRIVATE (HdLauncherGrid)
                          G_IMPLEMENT_INTERFACE (TIDY_TYPE_SCROLLABLE,
                                                 tidy_scrollable_iface_init));
 
@@ -654,8 +656,6 @@ static void
 hd_launcher_grid_class_init (HdLauncherGridClass *klass)
 {
   GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
-
-  g_type_class_add_private (klass, sizeof (HdLauncherGridPrivate));
 
   gobject_class->set_property = hd_launcher_grid_set_property;
   gobject_class->get_property = hd_launcher_grid_get_property;

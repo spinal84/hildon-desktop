@@ -100,8 +100,8 @@ struct _HdLauncherPrivate
   gboolean is_editor_in_landscape;
 };
 
-#define HD_LAUNCHER_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), \
-                                HD_TYPE_LAUNCHER, HdLauncherPrivate))
+#define HD_LAUNCHER_GET_PRIVATE(obj)  \
+  (hd_launcher_get_instance_private (HD_LAUNCHER (obj)))
 
 /* Signals */
 enum
@@ -117,7 +117,10 @@ enum
 
 static guint launcher_signals[LAST_SIGNAL] = {0, };
 
-G_DEFINE_TYPE (HdLauncher, hd_launcher, CLUTTER_TYPE_GROUP);
+G_DEFINE_TYPE_WITH_CODE (HdLauncher,
+                         hd_launcher,
+                         CLUTTER_TYPE_GROUP,
+                         G_ADD_PRIVATE (HdLauncher));
 
 /* Forward declarations */
 static void hd_launcher_constructed (GObject *gobject);
@@ -165,8 +168,6 @@ static void
 hd_launcher_class_init (HdLauncherClass *klass)
 {
   GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
-
-  g_type_class_add_private (klass, sizeof (HdLauncherPrivate));
 
   gobject_class->dispose     = hd_launcher_dispose;
   gobject_class->constructed = hd_launcher_constructed;

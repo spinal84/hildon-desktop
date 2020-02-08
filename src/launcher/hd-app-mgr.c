@@ -136,8 +136,7 @@ struct _HdAppMgrPrivate
   gboolean accel_enabled;
 };
 
-#define HD_APP_MGR_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), \
-                                     HD_TYPE_APP_MGR, HdAppMgrPrivate))
+#define HD_APP_MGR_GET_PRIVATE(obj) (hd_app_mgr_get_instance_private (obj))
 
 /* Signals */
 enum
@@ -153,7 +152,10 @@ enum
 };
 static guint app_mgr_signals[LAST_SIGNAL] = {0, };
 
-G_DEFINE_TYPE (HdAppMgr, hd_app_mgr, G_TYPE_OBJECT);
+G_DEFINE_TYPE_WITH_CODE (HdAppMgr,
+                         hd_app_mgr,
+                         G_TYPE_OBJECT,
+                         G_ADD_PRIVATE (HdAppMgr));
 
 /* Memory usage */
 #define LOWMEM_PROC_ALLOWED     "/proc/sys/vm/lowmem_allowed_pages"
@@ -318,8 +320,6 @@ static void
 hd_app_mgr_class_init (HdAppMgrClass *klass)
 {
   GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
-
-  g_type_class_add_private (klass, sizeof (HdAppMgrPrivate));
 
   gobject_class->dispose     = hd_app_mgr_dispose;
 
@@ -2384,13 +2384,15 @@ _hd_app_mgr_request_app_pid_cb (DBusGProxy *proxy, guint pid,
 gboolean
 hd_app_mgr_is_portrait(void)
 {
-  return HD_APP_MGR_GET_PRIVATE (hd_app_mgr_get())->portrait;
+  HdAppMgrPrivate *priv = HD_APP_MGR_GET_PRIVATE (hd_app_mgr_get ());
+  return priv->portrait;
 }
 
 static void
 hd_app_mgr_request_app_pid (HdRunningApp *app)
 {
-  DBusGProxy *proxy = (HD_APP_MGR_GET_PRIVATE (hd_app_mgr_get()))->dbus_proxy;
+  HdAppMgrPrivate *priv = HD_APP_MGR_GET_PRIVATE (hd_app_mgr_get ());
+  DBusGProxy *proxy = priv->dbus_proxy;
   const gchar *service = hd_running_app_get_service (app);
 
   if (!service)

@@ -143,15 +143,16 @@ hd_switcher_zoom_in_complete (ClutterActor *actor, HdSwitcher *switcher);
 static MBWindowManagerClient*
 actor_to_client_window (ClutterActor *clutter_window);
 
-G_DEFINE_TYPE (HdSwitcher, hd_switcher, G_TYPE_OBJECT);
+G_DEFINE_TYPE_WITH_CODE (HdSwitcher,
+                         hd_switcher,
+                         G_TYPE_OBJECT,
+                         G_ADD_PRIVATE (HdSwitcher));
 
 static void
 hd_switcher_class_init (HdSwitcherClass *klass)
 {
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
   GParamSpec   *pspec;
-
-  g_type_class_add_private (klass, sizeof (HdSwitcherPrivate));
 
   object_class->dispose      = hd_switcher_dispose;
   object_class->finalize     = hd_switcher_finalize;
@@ -271,9 +272,7 @@ hd_switcher_constructed (GObject *object)
 static void
 hd_switcher_init (HdSwitcher *self)
 {
-  self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self,
-                                            HD_TYPE_SWITCHER,
-                                            HdSwitcherPrivate);
+  self->priv = hd_switcher_get_instance_private (self);
 }
 
 static void

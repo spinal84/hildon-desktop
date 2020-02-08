@@ -32,10 +32,6 @@
 #include "tidy-marshal.h"
 #include "tidy-private.h"
 
-G_DEFINE_TYPE (TidyAdjustment, tidy_adjustment, G_TYPE_OBJECT)
-
-#define ADJUSTMENT_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), TIDY_TYPE_ADJUSTMENT, TidyAdjustmentPrivate))
-
 struct _TidyAdjustmentPrivate
 {
   ClutterFixed lower;
@@ -52,6 +48,13 @@ struct _TidyAdjustmentPrivate
   ClutterFixed     old_position;
   ClutterFixed     new_position;
 };
+
+G_DEFINE_TYPE_WITH_CODE (TidyAdjustment,
+                         tidy_adjustment,
+                         G_TYPE_OBJECT,
+                         G_ADD_PRIVATE (TidyAdjustment))
+
+#define ADJUSTMENT_PRIVATE(o) (tidy_adjustment_get_instance_private (o))
 
 enum
 {
@@ -190,8 +193,6 @@ static void
 tidy_adjustment_class_init (TidyAdjustmentClass *klass)
 {
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
-
-  g_type_class_add_private (klass, sizeof (TidyAdjustmentPrivate));
 
   object_class->get_property = tidy_adjustment_get_property;
   object_class->set_property = tidy_adjustment_set_property;
