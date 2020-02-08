@@ -1,3 +1,9 @@
+hildon-desktop (1:2.2.161) unstable; urgency=medium
+
+  * Port to Debian Buster
+
+ -- Arthur Demchenkov <spinal.by@gmail.com>  Sat, 08 Feb 2020 11:49:58 +0300
+
 hildon-desktop (1:2.2.160) unstable; urgency=medium
 
   * Port to Debian Stretch
