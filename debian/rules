@@ -24,7 +24,8 @@ CONFFLAGS += \
 override_dh_auto_configure:
 	dh_auto_configure -- $(CONFFLAGS)
 
-binary-install/hildon-desktop::
+override_dh_install:
+	dh_install
 	dh_maemolauncher
 	cp src/hildon-desktop-keys.schemas debian/hildon-desktop/usr/share/gconf/schemas/
 	dh_installxsession -u 'post 20'

@@ -4,6 +4,7 @@ Priority: optional
 Maintainer: Arthur Demchenkov <spinal.by@gmail.com>
 Build-Depends:
  libmatchbox2-dev (>= 0.3.0),
+ maemo-system-services-dev,
  libhildondesktop1-dev,
  libgnome-menu-3-dev,
  maemo-launcher-dev,
@@ -21,6 +22,7 @@ Depends:
  maemo-af-desktop-l10n-mr0 | maemo-af-desktop-l10n-mr,
  hildon-theme | hildon-theme-devel (>= 5.10.19-1),
  ke-recv-l10n-mr | ke-recv-l10n-mr0,
+ maemo-system-services,
  clipboard-manager,
  osso-af-startup,
  ke-recv-extra,
