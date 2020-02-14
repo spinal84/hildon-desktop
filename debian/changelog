@@ -1,3 +1,10 @@
+hildon-desktop (1:2.2.162) unstable; urgency=medium
+
+  * Fix installation of Xsession scripts
+  * Remove useless init script
+
+ -- Arthur Demchenkov <spinal.by@gmail.com>  Fri, 14 Feb 2020 21:25:57 +0300
+
 hildon-desktop (1:2.2.161) unstable; urgency=medium
 
   * Port to Debian Buster
