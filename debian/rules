@@ -24,9 +24,6 @@ CONFFLAGS += \
 override_dh_auto_configure:
 	dh_auto_configure -- $(CONFFLAGS)
 
-override_dh_installinit:
-	dh_installinit --no-start
-
 binary-install/hildon-desktop::
 	dh_maemolauncher
 	cp src/hildon-desktop-keys.schemas debian/hildon-desktop/usr/share/gconf/schemas/
