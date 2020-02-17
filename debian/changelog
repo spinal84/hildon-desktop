@@ -1,3 +1,9 @@
+hildon-desktop (1:2.2.163) unstable; urgency=medium
+
+  * Fix maemo-launcher support
+
+ -- Arthur Demchenkov <spinal.by@gmail.com>  Mon, 17 Feb 2020 18:39:22 +0300
+
 hildon-desktop (1:2.2.162) unstable; urgency=medium
 
   * Fix installation of Xsession scripts
