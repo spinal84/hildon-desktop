@@ -1,3 +1,9 @@
+hildon-desktop (1:2.2.165) unstable; urgency=medium
+
+  * Motorola Droid 4 fixes
+
+ -- Arthur Demchenkov <spinal.by@gmail.com>  Wed, 19 Feb 2020 00:43:57 +0300
+
 hildon-desktop (1:2.2.163) unstable; urgency=medium
 
   * Fix maemo-launcher support
