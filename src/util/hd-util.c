@@ -314,8 +314,7 @@ void hd_util_set_screen_size_property(MBWindowManager *wm,
                     (unsigned char *)value, 2);
 }
 
-/* Change the screen's orientation by rotating 90 degrees
- * (portrait mode) or going back to landscape.
+/* Change the screen's orientation.
  * Returns whether the orientation has actually changed. */
 gboolean
 hd_util_change_screen_orientation (MBWindowManager *wm,
@@ -324,8 +323,10 @@ hd_util_change_screen_orientation (MBWindowManager *wm,
   int rr_major, rr_minor;
   static RRCrtc crtc = ~0UL; /* cache to avoid potentially lots of roundtrips */
   static int randr_supported = -1;
+  gboolean display_is_landscape;
   XRRScreenResources *res;
   XRRCrtcInfo *crtc_info;
+  gboolean rotate;
   Rotation want;
   Status ret;
   int width, height, width_mm, height_mm;
@@ -366,31 +367,35 @@ hd_util_change_screen_orientation (MBWindowManager *wm,
       return FALSE;
     }
 
+  display_is_landscape = DisplayWidth (wm->xdpy, DefaultScreen (wm->xdpy)) >
+                         DisplayHeight (wm->xdpy, DefaultScreen (wm->xdpy));
+
   if (goto_portrait)
     {
       g_debug ("Entering portrait mode");
-      want = RR_Rotate_90;
-      width = MIN(DisplayWidth (wm->xdpy, DefaultScreen (wm->xdpy)),
-		  DisplayHeight (wm->xdpy, DefaultScreen (wm->xdpy)));
-      height = MAX(DisplayWidth (wm->xdpy, DefaultScreen (wm->xdpy)),
- 		   DisplayHeight (wm->xdpy, DefaultScreen (wm->xdpy)));
-      width_mm = MIN(DisplayWidthMM (wm->xdpy, DefaultScreen (wm->xdpy)),
-		     DisplayHeightMM (wm->xdpy, DefaultScreen (wm->xdpy)));
-      height_mm = MAX(DisplayWidthMM (wm->xdpy, DefaultScreen (wm->xdpy)),
- 		      DisplayHeightMM (wm->xdpy, DefaultScreen (wm->xdpy)));
+      rotate = display_is_landscape;
     }
   else
     {
       g_debug ("Leaving portrait mode");
+      rotate = !display_is_landscape;
+    }
+
+  if (rotate)
+    {
+      want = display_is_landscape ? RR_Rotate_90 : RR_Rotate_270;
+      width = DisplayHeight (wm->xdpy, DefaultScreen (wm->xdpy));
+      height = DisplayWidth (wm->xdpy, DefaultScreen (wm->xdpy));
+      width_mm = DisplayHeightMM (wm->xdpy, DefaultScreen (wm->xdpy));
+      height_mm = DisplayWidthMM (wm->xdpy, DefaultScreen (wm->xdpy));
+    }
+  else
+    {
       want = RR_Rotate_0;
-      width = MAX(DisplayWidth (wm->xdpy, DefaultScreen (wm->xdpy)),
-		  DisplayHeight (wm->xdpy, DefaultScreen (wm->xdpy)));
-      height = MIN(DisplayWidth (wm->xdpy, DefaultScreen (wm->xdpy)),
-		   DisplayHeight (wm->xdpy, DefaultScreen (wm->xdpy)));
-      width_mm = MAX(DisplayWidthMM (wm->xdpy, DefaultScreen (wm->xdpy)),
-		     DisplayHeightMM (wm->xdpy, DefaultScreen (wm->xdpy)));
-      height_mm = MIN(DisplayWidthMM (wm->xdpy, DefaultScreen (wm->xdpy)),
- 		      DisplayHeightMM (wm->xdpy, DefaultScreen (wm->xdpy)));
+      width = DisplayWidth (wm->xdpy, DefaultScreen (wm->xdpy));
+      height = DisplayHeight (wm->xdpy, DefaultScreen (wm->xdpy));
+      width_mm = DisplayWidthMM (wm->xdpy, DefaultScreen (wm->xdpy));
+      height_mm = DisplayHeightMM (wm->xdpy, DefaultScreen (wm->xdpy));
     }
 
   if (!(crtc_info->rotations & want))
