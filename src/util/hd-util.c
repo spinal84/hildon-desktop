@@ -230,6 +230,7 @@ static RRCrtc
 get_primary_crtc (MBWindowManager *wm, XRRScreenResources *res)
 {
   int i;
+  RROutput primary;
   XRROutputInfo *output;
   RRCrtc ret = ~0UL;
   Atom rr_connector_type, rr_connector_panel;
@@ -266,6 +267,21 @@ get_primary_crtc (MBWindowManager *wm, XRRScreenResources *res)
             }
         }
       XRRFreeOutputInfo (output);
+    }
+
+  if (ret == ~0UL)
+    {
+      primary = XRRGetOutputPrimary (wm->xdpy, wm->root_win->xwindow);
+
+      if (primary == None)
+        return ret;
+
+      output = XRRGetOutputInfo (wm->xdpy, res, primary);
+      if (output)
+        {
+          ret = output->crtc;
+          XRRFreeOutputInfo (output);
+        }
     }
 
   return ret;
