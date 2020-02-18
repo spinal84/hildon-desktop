@@ -20,8 +20,8 @@
 /* #define COMPOSITED 1 */
 
 /* Area's width and height to render */
-#define AREAW 800
-#define AREAH 480
+#define AREAW 960
+#define AREAH 540
 
 #ifndef COMPOSITED
 static void set_non_compositing (Display *display, Window xwindow)

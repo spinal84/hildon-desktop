@@ -118,7 +118,7 @@ int main(int argc, char **argv)
 
         dpy = XOpenDisplay(NULL);
         w = XCreateSimpleWindow(dpy, DefaultRootWindow (dpy), 0, 0,
-                                800, 480, 0, 0, 0);
+                                960, 540, 0, 0, 0);
 
         set_fullscreen(dpy, w);
         set_window_type(dpy, w);

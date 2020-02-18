@@ -1576,7 +1576,7 @@ void hd_comp_mgr_reset_overlay_shape (HdCompMgr *hmgr)
     /* Reparent X back to the root window - and move it offscreen, then
      * reset its background to black. */
     XReparentWindow (wm->xdpy, clutter_window, wm->root_win->xwindow, 0, 0);
-    XMoveWindow(wm->xdpy, clutter_window, 0, -800);
+    XMoveWindow(wm->xdpy, clutter_window, 0, -960);
     XSetWindowBackground(wm->xdpy, clutter_window,
                          BlackPixel(wm->xdpy, DefaultScreen(wm->xdpy)));
     /* Kill the overlay window */

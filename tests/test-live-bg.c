@@ -292,13 +292,13 @@ int main(int argc, char **argv)
           attrs.colormap = colormap;
           attrs.border_pixel = BlackPixel (dpy, 0);
           w = XCreateWindow(dpy, DefaultRootWindow (dpy), 0, 0,
-                            800, 480, 0, 32,
+                            960, 540, 0, 32,
                             InputOutput,
                             visual,
                             CWColormap | CWBorderPixel, &attrs);
         } else {
           w = XCreateWindow(dpy, DefaultRootWindow (dpy), 0, 0,
-                            800, 480, 0, CopyFromParent, InputOutput,
+                            960, 540, 0, CopyFromParent, InputOutput,
                             CopyFromParent,
                             0, NULL);
           XSetWindowBackground (dpy, w, BlackPixel (dpy, 0));
@@ -347,8 +347,8 @@ int main(int argc, char **argv)
                 else {
                   int t = time(NULL);
                   if (t - last_time > 0) {
-                    unsigned int rx = rand() * 1000 % 800 + 1,
-                                 ry = rand() * 1000 % 480 + 1;
+                    unsigned int rx = rand() * 1000 % 960 + 1,
+                                 ry = rand() * 1000 % 540 + 1;
                     draw_rect (dpy, w, green_gc, &green_col, rx, ry);
                     last_time = t;
                   }
@@ -362,8 +362,8 @@ int main(int argc, char **argv)
                   if (mode > 100 || mode < -100) {
                     /* draw background with transparent colour */
                     XImage ximage;
-                    ximage.width = 800;
-                    ximage.height = 480;
+                    ximage.width = 960;
+                    ximage.height = 540;
                     ximage.format = ZPixmap;
                     ximage.byte_order = LSBFirst;
                     ximage.bitmap_unit = 32;
@@ -375,13 +375,13 @@ int main(int argc, char **argv)
                     ximage.blue_mask = 0;
                     ximage.xoffset = 0;
                     ximage.bits_per_pixel = 32;
-                    ximage.bytes_per_line = 800 * 4;
-                    ximage.data = calloc (1, 800 * 480 * 4);
+                    ximage.bytes_per_line = 960 * 4;
+                    ximage.data = calloc (1, 960 * 540 * 4);
 
                     XInitImage (&ximage);
 
                     XPutImage (dpy, w, green_gc, &ximage, 0, 0, 0, 0,
-                               800, 480);
+                               960, 540);
                     free (ximage.data);
                   }
                   draw_rect (dpy, w, green_gc, &green_col, 100, 100);

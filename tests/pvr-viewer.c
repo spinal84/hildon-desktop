@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
 
   /* Get the stage and set its size and color: */
   stage = clutter_stage_get_default ();
-  clutter_actor_set_size (stage, 800, 480);
+  clutter_actor_set_size (stage, 960, 540);
   clutter_stage_set_color (CLUTTER_STAGE (stage), &stage_color);
   
   tex = clutter_texture_new_from_file(argv[1], 0);
