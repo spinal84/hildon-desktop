@@ -42,6 +42,9 @@ G_BEGIN_DECLS
 #define HD_COMP_MGR_PORTRAIT_WIDTH   540
 #define HD_COMP_MGR_PORTRAIT_HEIGHT  960
 
+#define SCALE_X(v) ((1200000 * v) / 1000000)
+#define SCALE_Y(v) ((1125000 * v) / 1000000)
+
 /* The title bar height + HALF_MARGIN border. */
 #define HD_COMP_MGR_TOP_MARGIN         56
 /* task button width */

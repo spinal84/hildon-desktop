@@ -106,8 +106,8 @@
  * %GRID_VERTICAL_GAP:            How much gap to leave between thumbnails.
  */
 #define GRID_TOP_MARGIN           HD_COMP_MGR_TOP_MARGIN
-#define GRID_HORIZONTAL_GAP       16
-#define GRID_VERTICAL_GAP         16
+#define GRID_HORIZONTAL_GAP       SCALE_Y(16)
+#define GRID_VERTICAL_GAP         SCALE_Y(16)
 
 /*
  * Application thumbnail dimensions, depending on the number of
@@ -119,16 +119,16 @@
  * SINGLE = Bigger task switcher (see thp_tweaks), single column layout
  * TWOCOL = Bigger task switcher (see thp_tweaks), two-column layout
  */
-#define THUMB_SINGLE_WIDTH        600
-#define THUMB_SINGLE_HEIGHT       350
-#define THUMB_TWOCOL_WIDTH        324
-#define THUMB_TWOCOL_HEIGHT       204
-#define THUMB_LARGE_WIDTH         344
-#define THUMB_LARGE_HEIGHT        214
-#define THUMB_MEDIUM_WIDTH        224
-#define THUMB_MEDIUM_HEIGHT       150
-#define THUMB_SMALL_WIDTH         152
-#define THUMB_SMALL_HEIGHT        112
+#define THUMB_SINGLE_WIDTH        SCALE_X(600)
+#define THUMB_SINGLE_HEIGHT       SCALE_Y(350)
+#define THUMB_TWOCOL_WIDTH        SCALE_X(324)
+#define THUMB_TWOCOL_HEIGHT       SCALE_Y(204)
+#define THUMB_LARGE_WIDTH         SCALE_X(344)
+#define THUMB_LARGE_HEIGHT        SCALE_Y(214)
+#define THUMB_MEDIUM_WIDTH        SCALE_X(224)
+#define THUMB_MEDIUM_HEIGHT       SCALE_Y(150)
+#define THUMB_SMALL_WIDTH         SCALE_X(152)
+#define THUMB_SMALL_HEIGHT        SCALE_Y(112)
 
 /* Metrics inside a thumbnail. */
 /*
