@@ -116,7 +116,7 @@ static gboolean _hd_launcher_grid_blocker_release_cb (ClutterActor *actor,
                                         gpointer *data);
 
 static gboolean      hd_launcher_grid_is_portrait (HdLauncherGrid *self);
-#define HD_LAUNCHER_GRID_MAX_COLUMNS_LANDSCAPE 5
+#define HD_LAUNCHER_GRID_MAX_COLUMNS_LANDSCAPE 6
 #define HD_LAUNCHER_GRID_MAX_COLUMNS_PORTRAIT 3
 
 #define HD_LAUNCHER_GRID_LEFT_DISMISSAL_AREA_LANDSCAPE (HD_LAUNCHER_LEFT_MARGIN)
