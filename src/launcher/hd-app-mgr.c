@@ -2227,8 +2227,11 @@ hd_app_mgr_mce_activate_accel_if_needed (gboolean update_portraitness)
               if (hd_orientation_lock_is_locked_to_portrait ())
                 priv->portrait = TRUE;
               else
+              {
                 priv->portrait = _hd_app_mgr_dbus_check_value (reply,
                                                     MCE_ORIENTATION_PORTRAIT);
+                priv->portrait = TRUE;
+              }
             }
           dbus_message_unref (reply);
         }

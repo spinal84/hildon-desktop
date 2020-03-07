@@ -788,19 +788,20 @@ main (int argc, char **argv)
   hd_volume_profile_init ();
 
   /* Check if orientation is locked to portrait or the device is in vertical position. */
-  if (hd_orientation_lock_is_locked_to_portrait () ||
-      (!hd_orientation_lock_is_enabled () && hd_home_is_portrait_capable ()))
-    {
+//  if (hd_orientation_lock_is_locked_to_portrait () ||
+//      (!hd_orientation_lock_is_enabled () && hd_home_is_portrait_capable ()))
+//    {
+      hd_comp_mgr_set_pip_flags (HD_COMP_MGR (wm->comp_mgr), TRUE, TRUE);
       hd_render_manager_set_state (HDRM_STATE_HOME_PORTRAIT);
       if (hd_util_change_screen_orientation (wm, TRUE))
         hd_util_root_window_configured (wm);
-    }
-  else
-    {
-      /* Move to landscape for safety. */
-      if (hd_util_change_screen_orientation (wm, FALSE))
-        hd_util_root_window_configured (wm);
-    }
+//    }
+//  else
+//    {
+//      /* Move to landscape for safety. */
+//      if (hd_util_change_screen_orientation (wm, FALSE))
+//        hd_util_root_window_configured (wm);
+//    }
 
 
   /* NB: we call gtk_main as opposed to clutter_main or mb_wm_main_loop
