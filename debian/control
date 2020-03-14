@@ -19,6 +19,7 @@ Multi-arch: same
 Depends:
  ${shlibs:Depends},
  ${misc:Depends},
+ ${launcher:Depends},
  maemo-af-desktop-l10n-mr0 | maemo-af-desktop-l10n-mr,
  hildon-theme | hildon-theme-devel (>= 5.10.19-1),
  ke-recv-l10n-mr | ke-recv-l10n-mr0,
