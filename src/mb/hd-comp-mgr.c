@@ -3703,7 +3703,7 @@ dump_clutter_actor_tree (ClutterActor *actor, GString *indent)
 
   clutter_actor_get_geometry (actor, &geo);
   clutter_actor_get_anchor_point (actor, &ax, &ay);
-  g_debug ("actor[%u]: %s%p (type=%s, name=%s, win=0x%lx), "
+  g_debug ("actor[%" G_GSIZE_FORMAT "]: %s%p (type=%s, name=%s, win=0x%lx), "
            "size: %ux%u%+d%+d[%d,%d], visible: %d, reactive: %d",
            indent->len, indent->str, actor,
            G_OBJECT_TYPE_NAME (actor), name,
