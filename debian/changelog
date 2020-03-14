@@ -1,3 +1,9 @@
+hildon-desktop (1:2.2.164) unstable; urgency=medium
+
+  * Make it "upstream" again
+
+ -- Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>  Sat, 14 Mar 2020 12:24:51 +0200
+
 hildon-desktop (1:2.2.163) unstable; urgency=medium
 
   * Fix maemo-launcher support
