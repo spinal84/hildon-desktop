@@ -48,4 +48,12 @@ HdKeyFrameList *hd_key_frame_list_create(const char *keys);
 void hd_key_frame_list_free(HdKeyFrameList *k);
 float hd_key_frame_interpolate(HdKeyFrameList *k, float x);
 
+void hd_util_display_portraitness_init(MBWindowManager *wm);
+
+/* Display width, accounting for initial rotation */
+guint hd_util_display_width(void);
+
+/* Display height, accounting for initial rotation */
+guint hd_util_display_height(void);
+
 #endif

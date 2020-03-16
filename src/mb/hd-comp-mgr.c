@@ -91,7 +91,7 @@ struct HdCompMgrPrivate
   GHashTable            *shown_apps;
   GHashTable            *hibernating_apps;
 
-  Atom                   atoms[_HD_ATOM_LAST];
+  Atom                   *atoms;
 
   DBusConnection        *dbus_connection;
 
@@ -492,6 +492,30 @@ hd_comp_mgr_class_init (MBWMObjectClass *klass)
 #endif
 }
 
+static Atom *
+hd_comp_mgr_get_atoms(MBWindowManager *wm)
+{
+  static gboolean inited = FALSE;
+  static Atom atoms[_HD_ATOM_LAST];
+
+  if (!inited)
+    {
+      hd_atoms_init (wm->xdpy, atoms);
+      inited = TRUE;
+    }
+
+  return atoms;
+}
+
+Atom
+hd_comp_mgr_wm_get_atom (MBWindowManager *wm, HdAtoms id)
+{
+  if (id >= _HD_ATOM_LAST)
+    return (Atom) 0;
+
+  return hd_comp_mgr_get_atoms(wm)[id];
+}
+
 static int
 hd_comp_mgr_init (MBWMObject *obj, va_list vap)
 {
@@ -509,7 +533,7 @@ hd_comp_mgr_init (MBWMObject *obj, va_list vap)
 
   hd_mb_wm = wm;
 
-  hd_atoms_init (wm->xdpy, priv->atoms);
+  priv->atoms = hd_comp_mgr_get_atoms(wm);
 
   priv->dbus_connection = hd_dbus_init (hmgr);
 

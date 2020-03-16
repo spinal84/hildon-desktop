@@ -670,6 +670,7 @@ main (int argc, char **argv)
     mb_wm_util_fatal_error("OOM?");
 
   mb_wm_rename_window (wm, wm->root_win->hidden_window, PACKAGE);
+  hd_util_display_portraitness_init(wm);
   mb_wm_init (wm);
   g_assert (mb_wm_comp_mgr_enabled (wm->comp_mgr));
 

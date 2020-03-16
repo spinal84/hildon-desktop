@@ -1,4 +1,4 @@
-
+#include "hd-atoms.h"
 #include "hd-util.h"
 
 #include <matchbox/core/mb-wm.h>
@@ -16,6 +16,11 @@
 #include "hd-render-manager.h"
 
 #include <gdk/gdk.h>
+
+/* whether our display width < height, not accounting for any rotation */
+static int display_is_portrait = -1;
+
+static int initially_rotated = -1;
 
 void *
 hd_util_get_win_prop_data_and_validate (Display   *xdpy,
@@ -230,7 +235,6 @@ static RRCrtc
 get_primary_crtc (MBWindowManager *wm, XRRScreenResources *res)
 {
   int i;
-  RROutput primary;
   XRROutputInfo *output;
   RRCrtc ret = ~0UL;
   Atom rr_connector_type, rr_connector_panel;
@@ -242,10 +246,10 @@ get_primary_crtc (MBWindowManager *wm, XRRScreenResources *res)
   if (res->ncrtc == 1)
     return res->crtcs[0];
 
-  rr_connector_type = hd_comp_mgr_get_atom (HD_COMP_MGR (wm->comp_mgr),
-                                            HD_ATOM_RANDR_CONNECTOR_TYPE);
-  rr_connector_panel = hd_comp_mgr_get_atom (HD_COMP_MGR (wm->comp_mgr),
-                                             HD_ATOM_RANDR_CONNECTOR_TYPE_PANEL);
+  rr_connector_type = hd_comp_mgr_wm_get_atom(
+                        wm, HD_ATOM_RANDR_CONNECTOR_TYPE);
+  rr_connector_panel = hd_comp_mgr_wm_get_atom(
+                         wm, HD_ATOM_RANDR_CONNECTOR_TYPE_PANEL);
 
   for (i = 0; i < res->noutput; i++)
     {
@@ -271,12 +275,13 @@ get_primary_crtc (MBWindowManager *wm, XRRScreenResources *res)
 
   if (ret == ~0UL)
     {
-      primary = XRRGetOutputPrimary (wm->xdpy, wm->root_win->xwindow);
+      RROutput primary = XRRGetOutputPrimary (wm->xdpy, wm->root_win->xwindow);
 
       if (primary == None)
         return ret;
 
       output = XRRGetOutputInfo (wm->xdpy, res, primary);
+
       if (output)
         {
           ret = output->crtc;
@@ -314,38 +319,47 @@ void hd_util_set_screen_size_property(MBWindowManager *wm,
                     (unsigned char *)value, 2);
 }
 
-/* Change the screen's orientation by rotating 90 degrees
- * (portrait mode) or going back to landscape.
- * Returns whether the orientation has actually changed. */
-gboolean
-hd_util_change_screen_orientation (MBWindowManager *wm,
-                                   gboolean goto_portrait)
+static gboolean
+randr_supported(MBWindowManager *wm)
 {
-  int rr_major, rr_minor;
-  static RRCrtc crtc = ~0UL; /* cache to avoid potentially lots of roundtrips */
   static int randr_supported = -1;
-  XRRScreenResources *res;
-  XRRCrtcInfo *crtc_info;
-  Rotation want;
-  Status ret;
-  int width, height, width_mm, height_mm;
-  unsigned long one = 1;
+  int rr_major, rr_minor;
 
   if (randr_supported == -1)
     {
-      ret = XRRQueryVersion (wm->xdpy, &rr_major, &rr_minor);
-      if (ret == True && (rr_major > 1 || (rr_major == 1 && rr_minor >= 3)))
+      Status ok = XRRQueryVersion (wm->xdpy, &rr_major, &rr_minor);
+
+      if (ok == 1 && (rr_major > 1 || (rr_major == 1 && rr_minor >= 3)))
           randr_supported = 1;
       else
           randr_supported = 0;
     }
-  if (!randr_supported)
+
+  return randr_supported != 0;
+}
+
+static gboolean
+hd_util_change_screen_orientation_real (MBWindowManager *wm,
+                                        gboolean goto_portrait,
+                                        gboolean do_change)
+{
+  static RRCrtc crtc = ~0UL; /* cache to avoid potentially lots of roundtrips */
+  XRRScreenResources *res;
+  XRRCrtcInfo *crtc_info;
+  Rotation want;
+  Status status = RRSetConfigSuccess;
+  int width, height, width_mm, height_mm;
+  unsigned long one = 1;
+  gboolean rv = FALSE;
+
+  if (!randr_supported(wm))
     {
       g_debug ("Server does not support RandR 1.3\n");
       return FALSE;
     }
 
   res = XRRGetScreenResources (wm->xdpy, wm->root_win->xwindow);
+
   if (!res)
     {
       g_warning ("Couldn't get RandR screen resources\n");
@@ -354,102 +368,159 @@ hd_util_change_screen_orientation (MBWindowManager *wm,
 
   if (crtc == ~0UL)
       crtc = get_primary_crtc (wm, res);
+
   if (crtc == ~0UL)
     {
       g_warning ("Couldn't find CRTC to rotate\n");
-      return FALSE;
+      goto err_res;
     }
+
   crtc_info = XRRGetCrtcInfo (wm->xdpy, res, crtc);
+
   if (!crtc_info)
     {
       g_warning ("Couldn't find CRTC info\n");
-      return FALSE;
+      goto err_res;
     }
+
+  if (display_is_portrait == -1)
+    display_is_portrait = FALSE;
 
   if (goto_portrait)
     {
-      g_debug ("Entering portrait mode");
-      want = RR_Rotate_90;
-      width = MIN(DisplayWidth (wm->xdpy, DefaultScreen (wm->xdpy)),
-		  DisplayHeight (wm->xdpy, DefaultScreen (wm->xdpy)));
-      height = MAX(DisplayWidth (wm->xdpy, DefaultScreen (wm->xdpy)),
- 		   DisplayHeight (wm->xdpy, DefaultScreen (wm->xdpy)));
-      width_mm = MIN(DisplayWidthMM (wm->xdpy, DefaultScreen (wm->xdpy)),
-		     DisplayHeightMM (wm->xdpy, DefaultScreen (wm->xdpy)));
-      height_mm = MAX(DisplayWidthMM (wm->xdpy, DefaultScreen (wm->xdpy)),
- 		      DisplayHeightMM (wm->xdpy, DefaultScreen (wm->xdpy)));
+      if (do_change)
+        {
+          g_debug ("Entering portrait mode");
+          want = RR_Rotate_90;
+          width = MIN(DisplayWidth (wm->xdpy, DefaultScreen (wm->xdpy)),
+                      DisplayHeight (wm->xdpy, DefaultScreen (wm->xdpy)));
+          height = MAX(DisplayWidth (wm->xdpy, DefaultScreen (wm->xdpy)),
+                       DisplayHeight (wm->xdpy, DefaultScreen (wm->xdpy)));
+          width_mm = MIN(DisplayWidthMM (wm->xdpy, DefaultScreen (wm->xdpy)),
+                         DisplayHeightMM (wm->xdpy, DefaultScreen (wm->xdpy)));
+          height_mm = MAX(DisplayWidthMM (wm->xdpy, DefaultScreen (wm->xdpy)),
+                          DisplayHeightMM (wm->xdpy, DefaultScreen (wm->xdpy)));
+        }
+
+      if ((crtc_info->rotation == RR_Rotate_0 &&
+           crtc_info->width < crtc_info->height) ||
+          (crtc_info->rotation == RR_Rotate_270 &&
+           crtc_info->width > crtc_info->height))
+        {
+          want = RR_Rotate_0;
+          display_is_portrait = TRUE;
+        }
     }
   else
     {
-      g_debug ("Leaving portrait mode");
-      want = RR_Rotate_0;
-      width = MAX(DisplayWidth (wm->xdpy, DefaultScreen (wm->xdpy)),
-		  DisplayHeight (wm->xdpy, DefaultScreen (wm->xdpy)));
-      height = MIN(DisplayWidth (wm->xdpy, DefaultScreen (wm->xdpy)),
-		   DisplayHeight (wm->xdpy, DefaultScreen (wm->xdpy)));
-      width_mm = MAX(DisplayWidthMM (wm->xdpy, DefaultScreen (wm->xdpy)),
-		     DisplayHeightMM (wm->xdpy, DefaultScreen (wm->xdpy)));
-      height_mm = MIN(DisplayWidthMM (wm->xdpy, DefaultScreen (wm->xdpy)),
- 		      DisplayHeightMM (wm->xdpy, DefaultScreen (wm->xdpy)));
+      if (do_change)
+        {
+          g_debug ("Leaving portrait mode");
+          want = RR_Rotate_0;
+          width = MAX(DisplayWidth (wm->xdpy, DefaultScreen (wm->xdpy)),
+                      DisplayHeight (wm->xdpy, DefaultScreen (wm->xdpy)));
+          height = MIN(DisplayWidth (wm->xdpy, DefaultScreen (wm->xdpy)),
+                       DisplayHeight (wm->xdpy, DefaultScreen (wm->xdpy)));
+          width_mm = MAX(DisplayWidthMM (wm->xdpy, DefaultScreen (wm->xdpy)),
+                         DisplayHeightMM (wm->xdpy, DefaultScreen (wm->xdpy)));
+          height_mm = MIN(DisplayWidthMM (wm->xdpy, DefaultScreen (wm->xdpy)),
+                          DisplayHeightMM (wm->xdpy, DefaultScreen (wm->xdpy)));
+        }
+
+      if ((crtc_info->rotation == RR_Rotate_0 &&
+           crtc_info->width < crtc_info->height) ||
+          (crtc_info->rotation == RR_Rotate_270 &&
+           crtc_info->width > crtc_info->height))
+        {
+          want = RR_Rotate_270;
+          display_is_portrait = TRUE;
+        }
     }
 
-  if (!(crtc_info->rotations & want))
+  if (initially_rotated == -1)
     {
-      g_warning ("CRTC does not support rotation (0x%.8X vs. 0x%.8X)",
-		 crtc_info->rotations, want);
-      return FALSE;
+      initially_rotated = crtc_info->rotation != RR_Rotate_0 &&
+                          crtc_info->rotation != RR_Rotate_180;
     }
 
-  if (crtc_info->rotation == want)
+  if (do_change)
     {
-      g_debug ("Requested rotation already active");
-      return FALSE;
+      if (!(crtc_info->rotations & want))
+        {
+          g_warning ("CRTC does not support rotation (0x%.8X vs. 0x%.8X)",
+                     crtc_info->rotations, want);
+          goto err_crtc_info;
+        }
+
+      if (crtc_info->rotation == want)
+        {
+          g_debug ("Requested rotation already active");
+          goto err_crtc_info;
+        }
+
+      /* We must call glFinish here in order to be sure that OpenGL won't be
+       * trying to render stuff while we do the transition - as this sometimes
+       * causes rubbish to be displayed. */
+      glFinish();
+
+      /* Grab the server around rotation to prevent clients attempting to
+       * draw at inopportune times. */
+      XGrabServer (wm->xdpy);
+      /* Stop windows being reconfigured */
+      XChangeProperty(wm->xdpy, wm->root_win->xwindow,
+                      wm->atoms[MBWM_ATOM_MAEMO_SUPPRESS_ROOT_RECONFIGURATION],
+                      XA_CARDINAL, 32, PropModeReplace,
+                      (unsigned char *)&one, 1);
+
+      /* Disable the CRTC first, as it doesn't fit within our existing screen. */
+      XRRSetCrtcConfig (wm->xdpy, res, crtc, crtc_info->timestamp, 0, 0, None,
+                        RR_Rotate_0, NULL, 0);
+      /* Then change the screen size to accommodate our glorious new CRTC. */
+      XRRSetScreenSize (wm->xdpy, wm->root_win->xwindow, width, height,
+                        width_mm, height_mm);
+      /* And now rotate. */
+      status = XRRSetCrtcConfig (wm->xdpy, res, crtc, crtc_info->timestamp,
+                                 crtc_info->x, crtc_info->y, crtc_info->mode, want,
+                                 crtc_info->outputs, crtc_info->noutput);
+
+      /* hd_util_root_window_configured will be called directly after this root
+       * window has been reconfigured */
+
+      /* Allow clients to redraw. */
+      XUngrabServer (wm->xdpy);
+      XFlush (wm->xdpy);  /* <-- this is required to avoid a lock-up */
     }
 
-  /* We must call glFinish here in order to be sure that OpenGL won't be
-   * trying to render stuff while we do the transition - as this sometimes
-   * causes rubbish to be displayed. */
-  glFinish();
+  rv = TRUE;
 
-  /* Grab the server around rotation to prevent clients attempting to
-   * draw at inopportune times. */
-  XGrabServer (wm->xdpy);
-  /* Stop windows being reconfigured */
-  XChangeProperty(wm->xdpy, wm->root_win->xwindow,
-                  wm->atoms[MBWM_ATOM_MAEMO_SUPPRESS_ROOT_RECONFIGURATION],
-                  XA_CARDINAL, 32, PropModeReplace,
-                  (unsigned char *)&one, 1);
-
-  /* Disable the CRTC first, as it doesn't fit within our existing screen. */
-  XRRSetCrtcConfig (wm->xdpy, res, crtc, crtc_info->timestamp, 0, 0, None,
-		    RR_Rotate_0, NULL, 0);
-  /* Then change the screen size to accommodate our glorious new CRTC. */
-  XRRSetScreenSize (wm->xdpy, wm->root_win->xwindow, width, height,
-		    width_mm, height_mm);
-  /* And now rotate. */
-  ret = XRRSetCrtcConfig (wm->xdpy, res, crtc, crtc_info->timestamp,
-                          crtc_info->x, crtc_info->y, crtc_info->mode, want,
-                          crtc_info->outputs, crtc_info->noutput);
-
-  /* hd_util_root_window_configured will be called directly after this root
-   * window has been reconfigured */
-
-  /* Allow clients to redraw. */
-  XUngrabServer (wm->xdpy);
-  XFlush (wm->xdpy);  /* <-- this is required to avoid a lock-up */
-
+err_crtc_info:
   XRRFreeCrtcInfo (crtc_info);
+
+err_res:
   XRRFreeScreenResources (res);
 
-  if (ret != Success)
+  if (rv == TRUE && do_change)
     {
-      g_warning ("XRRSetCrtcConfig() failed: %d", ret);
-      return FALSE;
+      if (status != RRSetConfigSuccess)
+        {
+          g_warning ("XRRSetCrtcConfig() failed: %d", status);
+          return FALSE;
+        }
+
+      hd_render_manager_flip_input_viewport();
     }
 
-  hd_render_manager_flip_input_viewport();
+  return rv;
+}
 
-  return TRUE;
+/* Change the screen's orientation by rotating 90 degrees
+ * (portrait mode) or going back to landscape.
+ * Returns whether the orientation has actually changed. */
+gboolean
+hd_util_change_screen_orientation (MBWindowManager *wm,
+                                   gboolean goto_portrait)
+{
+  return hd_util_change_screen_orientation_real(wm, goto_portrait, TRUE);
 }
 
 /* This is the finishing counterpart of hd_util_change_screen_orientation(),
@@ -810,4 +881,59 @@ float hd_key_frame_interpolate(HdKeyFrameList *k, float x)
       n = 0;
     }
   return k->keyframes[idx]*(1-n) + k->keyframes[idx+1]*n;
+}
+
+void
+hd_util_display_portraitness_init(MBWindowManager *wm)
+{
+  g_assert(display_is_portrait == -1);
+  hd_util_change_screen_orientation_real(wm, FALSE, FALSE);
+}
+
+/* Display width, accounting for initial rotation */
+guint
+hd_util_display_width()
+{
+  static guint width = 0;
+
+  if (width == 0)
+    {
+      if ((!display_is_portrait && !initially_rotated) ||
+          (display_is_portrait && initially_rotated))
+        {
+          width = WidthOfScreen(ScreenOfDisplay(
+                                  clutter_x11_get_default_display(), 0));
+        }
+      else
+        {
+          width = HeightOfScreen(ScreenOfDisplay(
+                                   clutter_x11_get_default_display(), 0));
+        }
+    }
+
+  return width;
+}
+
+/* Display height, accounting for initial rotation */
+guint
+hd_util_display_height()
+{
+  static guint height = 0;
+
+  if (height == 0)
+    {
+      if ((!display_is_portrait && !initially_rotated) ||
+          (display_is_portrait && initially_rotated))
+        {
+          height = HeightOfScreen(ScreenOfDisplay(
+                                    clutter_x11_get_default_display(), 0));
+        }
+      else
+        {
+          height = WidthOfScreen(ScreenOfDisplay(
+                                   clutter_x11_get_default_display(), 0));
+        }
+    }
+
+  return height;
 }
