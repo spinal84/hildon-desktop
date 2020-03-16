@@ -1,4 +1,3 @@
-#include "hd-atoms.h"
 #include "hd-util.h"
 
 #include <matchbox/core/mb-wm.h>
