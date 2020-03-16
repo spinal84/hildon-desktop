@@ -1,3 +1,10 @@
+hildon-desktop (1:2.2.166) unstable; urgency=medium
+
+  * Add primary output detection if there is no 'Panel' output
+  * Start in landscape, no matter initial rotation and display size
+
+ -- Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>  Mon, 16 Mar 2020 20:16:31 +0200
+
 hildon-desktop (1:2.2.165) unstable; urgency=medium
 
   * Add openrc fake job
