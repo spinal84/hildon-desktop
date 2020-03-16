@@ -1,3 +1,9 @@
+hildon-desktop (1:2.2.167) unstable; urgency=medium
+
+  * Fix warning: signal 'key-pressed-event' is invalid
+
+ -- Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>  Mon, 16 Mar 2020 20:25:22 +0200
+
 hildon-desktop (1:2.2.166) unstable; urgency=medium
 
   * Add primary output detection if there is no 'Panel' output
