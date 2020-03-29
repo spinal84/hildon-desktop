@@ -122,6 +122,7 @@ if test "$ac_cv_enable_static_mb2" = yes; then
 		       dbus-1 dnl
 		       x11 dnl
 		       xcomposite dnl
+		       xi dnl
 		       xfixes dnl
 		       xrandr dnl
 		       xdamage dnl
