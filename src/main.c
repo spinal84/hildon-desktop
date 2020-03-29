@@ -41,6 +41,7 @@
 #include <clutter/x11/clutter-x11.h>
 #include <clutter/clutter-container.h>
 #include <gdk-pixbuf-xlib/gdk-pixbuf-xlib.h>
+#include <X11/extensions/XInput.h>
 
 #include "hildon-desktop.h"
 #include "hd-wm.h"
@@ -80,6 +81,16 @@ MBWindowManager *hd_mb_wm = NULL;
 static int hd_clutter_mutex_enabled = FALSE;
 static int hd_clutter_mutex_do_unlock_after_disabling = FALSE;
 static GMutex hd_clutter_mutex;
+
+static int xi_motion_ev_type = -1;
+static int xi_presence_ev_type = -1;
+
+typedef struct {
+  gboolean is_ts;
+  XDevice *dev;
+} hd_xi_device;
+
+static GArray *xi_devices = NULL;
 
 void hd_mutex_enable (int setting)
 {
@@ -351,6 +362,96 @@ key_binding_func_key (MBWindowManager   *wm,
   hd_dbus_send_event (s);
 }
 
+/* Close all input devices previously opened */
+static void
+close_input_devices (Display *dpy)
+{
+  int i;
+
+  for (i = 0; i < xi_devices->len; i++)
+    {
+      hd_xi_device *xi_dev = &g_array_index (xi_devices, hd_xi_device, i);
+
+      if (xi_dev->dev)
+        {
+          XCloseDevice (dpy, xi_dev->dev);
+          xi_dev->dev = NULL;
+        }
+    }
+}
+
+/* Fill in the array with input devices type is touchscreen */
+static void
+enumerate_input_devices (Display *dpy)
+{
+  static Atom atom_touchscreen = None;
+  XDeviceInfo *devinfo;
+  int i, ndev;
+  GArray *eclass;
+
+  if (xi_devices)
+    {
+      close_input_devices (dpy);
+      g_array_free (xi_devices, TRUE);
+      xi_devices = NULL;
+    }
+
+  if (atom_touchscreen == None)
+    atom_touchscreen = XInternAtom (dpy, XI_TOUCHSCREEN, True);
+
+  if (atom_touchscreen == None)
+    return;
+
+  /* get XInput DeviceMotion events */
+  devinfo = XListInputDevices (dpy, &ndev);
+
+  eclass = g_array_new (FALSE, FALSE, sizeof (XEventClass));
+  xi_devices = g_array_new (FALSE, TRUE, sizeof (hd_xi_device));
+
+  if (!devinfo)
+    goto done;
+
+  for (i = 0; i < ndev; i++)
+    {
+      XDeviceInfo info = devinfo[i];
+
+      if (info.use == IsXExtensionPointer)
+        {
+          XEventClass ev_class;
+          XDevice *dev = XOpenDevice (dpy, info.id);
+          XID id = info.id;
+
+          if (xi_devices->len <= id)
+            g_array_set_size(xi_devices, id + 1);
+
+          hd_xi_device *xi_dev = &g_array_index (xi_devices, hd_xi_device, id);
+
+          DeviceMotionNotify (dev, xi_motion_ev_type, ev_class);
+          g_array_append_val (eclass, ev_class);
+
+          xi_dev->is_ts = (info.type == atom_touchscreen);
+          xi_dev->dev = dev;
+#if 0
+          g_warning ("### %d/%u. %s(%d):%s.%d t:%d c:%d\n", i, eclass->len,
+                     info.name, (int)info.id, XGetAtomName(dpy, info.type),
+                     xi_dev->is_ts, xi_motion_ev_type, (int)ev_class);
+#endif
+        }
+    }
+
+  XFreeDeviceList (devinfo);
+
+  if (eclass->len)
+    {
+      XSelectExtensionEvent (dpy,
+                             RootWindow (dpy, clutter_x11_get_default_screen()),
+                             (XEventClass *)eclass->data, eclass->len);
+    }
+
+done:
+  g_array_free (eclass, TRUE);
+}
+
 static ClutterX11FilterReturn
 clutter_x11_event_filter (XEvent *xev, ClutterEvent *cev, gpointer data)
 {
@@ -358,11 +459,27 @@ clutter_x11_event_filter (XEvent *xev, ClutterEvent *cev, gpointer data)
 
   if (xev->type == ButtonPress)
     hd_render_manager_press_effect ();
+  else if (xev->type == xi_motion_ev_type)
+    {
+      XDeviceMotionEvent *mev = (XDeviceMotionEvent *)xev;
+      XID devid = mev->deviceid;
+
+      if (devid < xi_devices->len)
+        {
+          hd_xi_device *xi_dev = &g_array_index (
+                                   xi_devices, hd_xi_device, devid);
+
+          wm_set_cursor_visibility (wm, !xi_dev->is_ts);
+        }
+    }
+  else if (xev->type == xi_presence_ev_type)
+    enumerate_input_devices (clutter_x11_get_default_display ());
 
   mb_wm_main_context_handle_x_event (xev, wm->main_ctx);
 
   if (wm->sync_type)
     mb_wm_sync (wm);
+
   return CLUTTER_X11_FILTER_CONTINUE;
 }
 
@@ -781,6 +898,13 @@ main (int argc, char **argv)
 	  }
   }
 
+  /* Register for input devices changes events, needed for cursor visibility */
+  XEventClass class_presence;
+  DevicePresence (dpy, xi_presence_ev_type, class_presence);
+  XSelectExtensionEvent (dpy,
+                         RootWindow (dpy, clutter_x11_get_default_screen ()),
+                         &class_presence, 1);
+  enumerate_input_devices (dpy);
 
   clutter_x11_add_filter (clutter_x11_event_filter, wm);
 
@@ -810,6 +934,9 @@ main (int argc, char **argv)
    * (manually done above) it appears be a super set of the other two
    * so everything *should* be covered this way. */
   gtk_main ();
+
+  if (xi_devices)
+    close_input_devices (dpy);
 
   mb_wm_object_unref (MB_WM_OBJECT (wm));
 
