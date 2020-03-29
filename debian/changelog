@@ -1,3 +1,9 @@
+hildon-desktop (1:2.2.168) unstable; urgency=medium
+
+  * Support cursor visibility based on input device type
+
+ -- Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>  Sun, 29 Mar 2020 10:19:31 +0300
+
 hildon-desktop (1:2.2.167) unstable; urgency=medium
 
   * Fix warning: signal 'key-pressed-event' is invalid
