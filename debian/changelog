@@ -1,3 +1,11 @@
+hildon-desktop (1:2.2.169) unstable; urgency=medium
+
+  [Ivaylo Dimitrov]
+  * Use another criteria to identify TS devices
+  * Merge pull request #3 from maemo-leste/cursor_management
+
+ -- Ivan J. <parazyd@dyne.org>  Wed, 01 Apr 2020 19:41:57 +0200
+
 hildon-desktop (1:2.2.168) unstable; urgency=medium
 
   * Support cursor visibility based on input device type
