@@ -384,7 +384,6 @@ close_input_devices (Display *dpy)
 static void
 enumerate_input_devices (Display *dpy)
 {
-  static Atom atom_touchscreen = None;
   XDeviceInfo *devinfo;
   int i, ndev;
   GArray *eclass;
@@ -395,12 +394,6 @@ enumerate_input_devices (Display *dpy)
       g_array_free (xi_devices, TRUE);
       xi_devices = NULL;
     }
-
-  if (atom_touchscreen == None)
-    atom_touchscreen = XInternAtom (dpy, XI_TOUCHSCREEN, True);
-
-  if (atom_touchscreen == None)
-    return;
 
   /* get XInput DeviceMotion events */
   devinfo = XListInputDevices (dpy, &ndev);
@@ -415,27 +408,42 @@ enumerate_input_devices (Display *dpy)
     {
       XDeviceInfo info = devinfo[i];
 
-      if (info.use == IsXExtensionPointer)
+      if (info.use != IsXPointer && info.use != IsXKeyboard)
         {
-          XEventClass ev_class;
-          XDevice *dev = XOpenDevice (dpy, info.id);
-          XID id = info.id;
+          XAnyClassPtr ci = info.inputclassinfo;
+          int j;
 
-          if (xi_devices->len <= id)
-            g_array_set_size(xi_devices, id + 1);
+          for (j = 0; j < info.num_classes; j++)
+            {
+              if (ci->class == ValuatorClass)
+                {
+                  XEventClass ev_class;
+                  XDevice *dev = XOpenDevice (dpy, info.id);
+                  XID id = info.id;
+                  XValuatorInfo *vi = (XValuatorInfo *)ci;
 
-          hd_xi_device *xi_dev = &g_array_index (xi_devices, hd_xi_device, id);
+                  if (xi_devices->len <= id)
+                    g_array_set_size(xi_devices, id + 1);
 
-          DeviceMotionNotify (dev, xi_motion_ev_type, ev_class);
-          g_array_append_val (eclass, ev_class);
+                  hd_xi_device *xi_dev =
+                      &g_array_index (xi_devices, hd_xi_device, id);
 
-          xi_dev->is_ts = (info.type == atom_touchscreen);
-          xi_dev->dev = dev;
+                  DeviceMotionNotify (dev, xi_motion_ev_type, ev_class);
+                  g_array_append_val (eclass, ev_class);
+
+                  xi_dev->is_ts = (vi->mode & DeviceMode) == Absolute;
+                  xi_dev->dev = dev;
 #if 0
-          g_warning ("### %d/%u. %s(%d):%s.%d t:%d c:%d\n", i, eclass->len,
-                     info.name, (int)info.id, XGetAtomName(dpy, info.type),
-                     xi_dev->is_ts, xi_motion_ev_type, (int)ev_class);
+                  g_warning ("### %d/%u. %s(%d):%s.%d ax:%d t:%d c:%d\n", i,
+                             eclass->len, info.name, (int)info.id,
+                             XGetAtomName(dpy, info.type), xi_dev->is_ts,
+                             (int)vi->num_axes, xi_motion_ev_type,
+                             (int)ev_class);
 #endif
+                  break;
+                }
+              ci = (XAnyClassPtr)((char *)ci + ci->length);
+            }
         }
     }
 
