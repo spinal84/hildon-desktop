@@ -1,3 +1,10 @@
+hildon-desktop (1:2.2.171) unstable; urgency=medium
+
+  * Build using newer libmatchbox2 for input focus fixes, and pass more events
+    to Clutter
+
+ -- Merlijn Wajer <merlijn@wizzup.org>  Sat, 16 May 2020 11:33:16 +0200
+
 hildon-desktop (1:2.2.170) unstable; urgency=medium
 
   * Build using newer libmatchbox2 for input focus fixes
