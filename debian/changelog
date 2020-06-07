@@ -1,3 +1,10 @@
+hildon-desktop (1:2.2.172) unstable; urgency=medium
+
+  * Have the h-d xsession file look for /etc/hildon-desktop.env.
+  * Pass though more x11 events to clutter
+
+ -- Ivan J. <parazyd@dyne.org>  Sun, 07 Jun 2020 13:45:30 +0200
+
 hildon-desktop (1:2.2.171) unstable; urgency=medium
 
   * Build using newer libmatchbox2 for input focus fixes, and pass more events
