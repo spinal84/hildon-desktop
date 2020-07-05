@@ -1,0 +1,2 @@
+DPkg::Post-Invoke {"/usr/sbin/hildon-menu-generate";};
+APT::Post-Invoke {"/usr/sbin/hildon-menu-generate";};

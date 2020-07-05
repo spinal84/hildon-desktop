@@ -1,3 +1,6 @@
+#!/bin/sh
+
+cat << EOF > /etc/xdg/menus/hildon.menu.tmp
 <!DOCTYPE Menu PUBLIC "-//freedesktop//DTD Menu 1.0//EN"
  "http://www.freedesktop.org/standards/menu-spec/menu-1.0.dtd">
 
@@ -56,18 +59,22 @@
       <All/>
     </Include>
     <Exclude>
-      <Filename>brainparty.desktop</Filename>
-      <Filename>bullshitbingo.desktop</Filename>
-      <Filename>countdowntimer.desktop</Filename>
-      <Filename>debian.directory</Filename>
-      <Filename>hildon-application-manager.desktop</Filename>
-      <Filename>hildon-control-panel.desktop</Filename>
-      <Filename>mihphoto.desktop</Filename>
-      <Filename>osso_pdfviewer.desktop</Filename>
-      <Filename>osso-xterm.desktop</Filename>
-      <Filename>quicknote.desktop</Filename>
-      <Filename>scummvm.desktop</Filename>
-      <Filename>user-guide.desktop</Filename>
+EOF
+
+mkdir -p /usr/share/applications/debian
+cd /usr/share/applications/debian
+rm -f *.desktop
+ln -s ../*.desktop .
+
+for i in /usr/share/applications/hildon/*.desktop; do
+	echo "      <Filename>$(basename $i)</Filename>" >> /etc/xdg/menus/hildon.menu.tmp
+done
+
+cat <<EOF >> /etc/xdg/menus/hildon.menu.tmp
     </Exclude>
   </Menu>
 </Menu>
+EOF
+
+#computers
+mv /etc/xdg/menus/hildon.menu.tmp /etc/xdg/menus/hildon.menu
