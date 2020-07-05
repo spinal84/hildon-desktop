@@ -1,3 +1,9 @@
+hildon-desktop (1:2.2.173) unstable; urgency=medium
+
+  * Implement apt hook for generating a Debian xdg menu.
+
+ -- Ivan J. <parazyd@dyne.org>  Sun, 05 Jul 2020 21:41:56 +0200
+
 hildon-desktop (1:2.2.172) unstable; urgency=medium
 
   * Have the h-d xsession file look for /etc/hildon-desktop.env.
