@@ -143,6 +143,78 @@ hd_launcher_app_parse_service_name (gchar *name)
   return res;
 }
 
+static gchar* hd_launcher_strip_exec(gchar *exec)
+{
+  gchar* loc;
+
+  while ((loc = g_strrstr (exec, "%f"))) {
+    loc[0]=' ';
+    loc[1]=' ';
+  }
+
+  while ((loc = g_strrstr (exec, "%F"))) {
+    loc[0]=' ';
+    loc[1]=' ';
+  }
+
+  while ((loc = g_strrstr (exec, "%u"))) {
+    loc[0]=' ';
+    loc[1]=' ';
+  }
+
+  while ((loc = g_strrstr (exec, "%U"))) {
+    loc[0]=' ';
+    loc[1]=' ';
+  }
+
+  while ((loc = g_strrstr (exec, "%d"))) {
+    loc[0]=' ';
+    loc[1]=' ';
+  }
+
+  while ((loc = g_strrstr (exec, "%D"))) {
+    loc[0]=' ';
+    loc[1]=' ';
+  }
+
+  while ((loc = g_strrstr (exec, "%n"))) {
+    loc[0]=' ';
+    loc[1]=' ';
+  }
+
+  while ((loc = g_strrstr (exec, "%N"))) {
+    loc[0]=' ';
+    loc[1]=' ';
+  }
+
+  while ((loc = g_strrstr (exec, "%i"))) {
+    loc[0]=' ';
+    loc[1]=' ';
+  }
+
+  while ((loc = g_strrstr (exec, "%c"))) {
+    loc[0]=' ';
+    loc[1]=' ';
+  }
+
+  while ((loc = g_strrstr (exec, "%k"))) {
+    loc[0]=' ';
+    loc[1]=' ';
+  }
+
+  while ((loc = g_strrstr (exec, "%v"))) {
+    loc[0]=' ';
+    loc[1]=' ';
+  }
+
+  while ((loc = g_strrstr (exec, "%m"))) {
+    loc[0]=' ';
+    loc[1]=' ';
+  }
+
+  return g_strchomp (exec);
+}
+
 gboolean
 hd_launcher_app_parse_keyfile (HdLauncherItem *item,
                                GKeyFile       *key_file,
@@ -161,12 +233,15 @@ hd_launcher_app_parse_keyfile (HdLauncherItem *item,
                                           HD_DESKTOP_ENTRY_SERVICE,
                                           NULL));
 
-  priv->exec = g_key_file_get_string (key_file,
+  gchar *exec = g_key_file_get_string (key_file,
                                       HD_DESKTOP_ENTRY_GROUP,
                                       HD_DESKTOP_ENTRY_EXEC,
                                       NULL);
-  if (priv->exec)
-    g_strchomp (priv->exec);
+
+  if (exec)
+    priv->exec = hd_launcher_strip_exec (exec);
+  else
+    priv->exec = NULL;
 
   priv->loading_image = g_key_file_get_string (key_file,
                                                HD_DESKTOP_ENTRY_GROUP,
