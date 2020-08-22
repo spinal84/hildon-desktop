@@ -1,3 +1,11 @@
+hildon-desktop (1:2.2.174) unstable; urgency=medium
+
+   * Change launcher_launch duration_out from 700 to 1400 to allow for applications taking a long time to launch
+  * Change snap_grid_size from 4px to 32px to make aligning icons easier
+  * Fix launching of many applications by removing XDG args
+
+ -- Merlijn Wajer <merlijn@wizzup.org>  Sat, 22 Aug 2020 11:59:39 +0200
+
 hildon-desktop (1:2.2.173) unstable; urgency=medium
 
   * Implement apt hook for generating a Debian xdg menu.
