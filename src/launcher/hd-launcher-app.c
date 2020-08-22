@@ -34,6 +34,7 @@
 
 /* desktop entry keys */
 #define HD_DESKTOP_ENTRY_EXEC           "Exec"
+#define HD_DESKTOP_ENTRY_TERMINAL       "Terminal"
 #define HD_DESKTOP_ENTRY_SERVICE        "X-Osso-Service"
 #define HD_DESKTOP_ENTRY_LOADING_IMAGE  "X-App-Loading-Image"
 #define HD_DESKTOP_ENTRY_PRESTART_MODE  "X-Maemo-Prestarted"
@@ -244,6 +245,16 @@ hd_launcher_app_parse_keyfile (HdLauncherItem *item,
     priv->exec = hd_launcher_strip_exec (exec);
   else
     priv->exec = NULL;
+
+  gboolean terminal = g_key_file_get_boolean(key_file,
+                                             HD_DESKTOP_ENTRY_GROUP,
+                                             HD_DESKTOP_ENTRY_TERMINAL,
+                                             NULL);
+  if ((priv->exec) && terminal) {
+      gchar *old_exec = priv->exec;
+      priv->exec = g_strdup_printf("%s %s", "osso-xterm", old_exec);
+      g_free(old_exec);
+  }
 
   priv->loading_image = g_key_file_get_string (key_file,
                                                HD_DESKTOP_ENTRY_GROUP,
